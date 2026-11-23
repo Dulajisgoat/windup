@@ -866,10 +866,103 @@ html.perf-low *{scroll-behavior:auto!important}
 @media(max-width:420px){.perf-sw{padding:2px}.perf-sw button{width:25px;height:26px}.theme-btn{width:30px;height:30px}.pub-head .btn.ghost{display:none}.topbar .searchbox input::placeholder{color:transparent}}
 .daytl{padding-left:40px}.daytl li::before{left:-40px}
 .nb-list{padding-left:40px}.nb-list li::before{left:-40px}
+/* v1.6 — cinematic book opening + smoother folds */
+.rd-door{display:none}
+.rd.cinema .rd-door{display:block;position:absolute;left:50%;top:0;width:50%;height:100%;z-index:7;transform-style:preserve-3d;transform-origin:left center;pointer-events:none;transition:transform 1s cubic-bezier(.55,.05,.2,1)}
+.rd.cinema .rd-door .df,.rd.cinema .rd-door .db{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.rd.cinema .rd-door .df{border-radius:3px 14px 14px 3px;background:linear-gradient(135deg,var(--c1,#2b2417),var(--c2,#46391d));box-shadow:inset 0 0 0 2px rgba(255,255,255,.14),inset 14px 0 18px -8px rgba(0,0,0,.45),0 30px 50px -26px rgba(20,12,0,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff6dc;text-align:center;padding:30px}
+.rd.cinema .rd-door .df::before{content:'';position:absolute;inset:16px 16px 16px 26px;border:1.5px solid rgba(255,246,220,.35);border-radius:3px 10px 10px 3px}
+.rd.cinema .rd-door .df::after{content:'';position:absolute;left:0;top:0;bottom:0;width:14px;background:linear-gradient(90deg,rgba(0,0,0,.35),transparent)}
+.rd.cinema .rd-door .dt{font:700 clamp(22px,3vw,34px)/1.1 var(--hand,serif);position:relative;max-width:80%}
+.rd.cinema .rd-door .ds{position:relative;font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
+.rd.cinema .rd-door .db{transform:rotateY(180deg);border-radius:14px 3px 3px 14px;background:var(--surface) repeating-linear-gradient(transparent 0 31px,rgba(217,162,26,.13) 31px 32px);box-shadow:inset -30px 0 34px -30px rgba(120,80,0,.55)}
+.rd.cinema.open .rd-door{transform:rotateY(-180deg)}
+.rd.cinema.open.settled .rd-door{visibility:hidden}
+/* closed → open book body */
+.rd.cinema .rd-book{transition:transform .85s cubic-bezier(.2,.78,.2,1),opacity .4s;animation:none}
+.rd.cinema.on:not(.open) .rd-book{transform:translateX(-25%) rotateY(-10deg)}
+.rd.cinema.on.open .rd-book{transform:none;transition:transform 1s cubic-bezier(.5,.05,.2,1),opacity .4s}
+.rd.cinema:not(.open) .rd-cover{opacity:0}.rd.cinema .rd-cover{transition:opacity .5s .3s}
+.rd.cinema:not(.open) .rd-pg.l{opacity:0}
+.rd.cinema .rd-pg.l{animation:none!important}.rd.cinema.open .rd-pg.l{transition:opacity .01s .5s}
+.rd.cinema:not(.open) .rd-bind{opacity:0}.rd.cinema .rd-bind{transition:opacity .4s .5s}
+.rd.cinema .rd-book::after{transition:opacity .4s .4s}.rd.cinema:not(.open) .rd-book::after{opacity:0}
+/* controls only once opened */
+.rd .rd-nav{animation:none!important;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .4s,transform .4s}
+.rd.open .rd-nav{opacity:1;pointer-events:auto;transform:none;transition-delay:.7s}
+.rd:not(.open) .rd-x{opacity:.0}.rd .rd-x{transition:transform .3s,opacity .3s .5s}.rd.open .rd-x{opacity:1}
+.rd:not(.cinema) .rd-nav{opacity:1;pointer-events:auto;transform:none}
+.rd:not(.cinema) .rd-x{opacity:1}
+.rd-bg{opacity:0;transition:opacity .5s}.rd.on .rd-bg{opacity:1}
+/* closing: pages stay put, cover swings shut */
+/* richer page flip */
+.rd-leaf .ls:not(.c) .sf{box-shadow:inset 26px 0 30px -26px rgba(120,80,0,.5),inset -1px 0 0 rgba(255,255,255,.4)}
+.rd-leaf.go .ls::before{content:'';position:absolute;inset:-2px 0;pointer-events:none;box-shadow:0 0 30px rgba(40,25,0,.28);opacity:0;animation:shade var(--dur) ease-in-out both}
+@keyframes turnF{0%{transform:rotateY(0)}12%{transform:rotateY(-9deg) translateZ(14px)}55%{transform:rotateY(-112deg) translateZ(40px)}100%{transform:rotateY(-180deg) translateZ(0)}}
+@keyframes turnB{0%{transform:rotateY(-180deg)}12%{transform:rotateY(-171deg) translateZ(14px)}55%{transform:rotateY(-68deg) translateZ(40px)}100%{transform:rotateY(0) translateZ(0)}}
+.rd-leaf.go.f .ls:not(.c){animation-timing-function:cubic-bezier(.42,.05,.2,1)}
+.rd-leaf.go.b .ls:not(.c){animation-timing-function:cubic-bezier(.42,.05,.2,1)}
+/* route page turn: softer, with a curl shadow */
+::view-transition-group(page){animation-duration:.8s}
+::view-transition-old(page),::view-transition-new(page){animation-duration:.8s;animation-timing-function:cubic-bezier(.45,.05,.2,1)}
+@keyframes turnOut{0%{transform:rotateY(0) skewY(0);filter:brightness(1)}35%{filter:brightness(.92);transform:rotateY(-28deg) skewY(-.6deg)}75%{filter:brightness(.7)}100%{transform:rotateY(-100deg);filter:brightness(.55);opacity:0}}
+@keyframes turnUnder{0%{filter:brightness(.78);transform:scale(.99)}100%{filter:brightness(1);transform:none}}
+@keyframes turnIn{0%{transform:rotateY(-100deg);filter:brightness(.55);opacity:0}25%{opacity:1;filter:brightness(.7)}65%{transform:rotateY(-28deg) skewY(-.6deg);filter:brightness(.92)}100%{transform:rotateY(0);filter:brightness(1)}}
+/* grade / read aloud / mood */
+.gr-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:start}@media(max-width:860px){.gr-grid{grid-template-columns:1fr}}
+.gr-add{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px}@media(max-width:620px){.gr-add{grid-template-columns:1fr 1fr}.gr-add input:first-child{grid-column:1/-1}.gr-add .btn{grid-column:1/-1}}
+.gr-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.gr-row{display:grid;grid-template-columns:1fr 90px 44px 32px;gap:10px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);animation:fadeup .35s both}
+.gr-n{display:flex;flex-direction:column;min-width:0}.gr-n b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gr-n small{color:var(--faint,#8a7a55);font-size:11.5px}
+.gr-bar{height:7px;border-radius:9px;background:var(--line);overflow:hidden}.gr-bar i{display:block;height:100%;background:var(--yellow);border-radius:9px;transition:width .5s}
+.gr-p{text-align:right;font-variant-numeric:tabular-nums}
+.gr-big{display:flex;align-items:center;gap:16px}.gr-big b{font-size:26px;display:block}.gr-big small{color:var(--faint,#8a7a55)}
+.gr-l{width:76px;height:76px;border-radius:20px;background:var(--yellow);color:#3b2a00;display:grid;place-items:center;font:700 34px var(--hand,serif);transform:rotate(-4deg);box-shadow:0 8px 20px -10px rgba(120,80,0,.6)}
+.gr-need{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gr-need label,.ra-f{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600}.ra-f{margin-bottom:12px}
+.gr-ans{margin:12px 0 0;padding:12px 14px;border-radius:12px;background:var(--yellow-soft);font-size:14px}
+.gr-scale{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}.gr-scale span{display:flex;flex-direction:column;align-items:center;padding:6px 10px;border-radius:10px;border:1px solid var(--line);font-size:11px;min-width:46px}.gr-scale b{font-size:14px}.gr-scale .on{background:var(--yellow);color:#3b2a00;border-color:transparent;transform:translateY(-2px)}
+.ra-f input[type=range]{width:100%;accent-color:var(--gold-ink,#b88400)}.ra-prog{height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin:6px 0 8px}.ra-prog i{display:block;height:100%;background:var(--yellow);transition:width .4s}
+.ra-view{max-height:220px;overflow:auto;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);line-height:1.7;font-size:14px;margin-top:8px}
+.ra-s{border-radius:5px;transition:background .25s}.ra-s.on{background:rgba(255,214,64,.55);box-decoration-break:clone;-webkit-box-decoration-break:clone}
+html[data-theme=dark] .ra-s.on{background:rgba(77,140,255,.4)}
+#ra-text{width:100%;resize:vertical;min-height:160px;font:inherit}
+.md-set{border:0;padding:0;margin:0 0 14px}.md-set legend{font-weight:700;font-size:13px;margin-bottom:8px;padding:0}
+.md-opts{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.md-o{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);transition:transform .2s,border-color .2s,background .2s}.md-o span{font-size:24px;line-height:1}.md-o small{font-size:11px}
+.md-o:hover{transform:translateY(-2px)}.md-o.on{border-color:var(--yellow);background:var(--yellow-soft);box-shadow:0 6px 16px -10px rgba(120,80,0,.7)}
+.md-batt{display:flex;gap:2px;align-items:flex-end;height:24px}.md-batt i{width:5px;border-radius:2px;background:var(--line);height:40%}.md-batt i:nth-child(2){height:55%}.md-batt i:nth-child(3){height:70%}.md-batt i:nth-child(4){height:85%}.md-batt i:nth-child(5){height:100%}.md-batt i.f{background:var(--yellow)}
+.md-tags{display:flex;flex-wrap:wrap;gap:7px}.md-t{padding:6px 12px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);font-size:12.5px;transition:.2s}.md-t.on{background:var(--yellow);border-color:var(--yellow);color:#3b2a00;font-weight:700}
+.md-chart{width:100%;height:auto;color:var(--ink)}.md-key{display:flex;gap:14px;font-size:12px;margin:4px 0 10px}.md-key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+.md-sum{display:flex;gap:10px}.md-sum span{flex:1;padding:10px;border-radius:12px;background:var(--yellow-soft);text-align:center;font-size:11.5px}.md-sum b{display:block;font-size:20px}
+.md-best{margin:12px 0 0;padding:10px 12px;border-left:3px solid var(--yellow);background:var(--yellow-soft);border-radius:0 10px 10px 0;font-size:13.5px}
+@media(max-width:480px){.md-opts{gap:5px}.md-o span{font-size:20px}}
+html.perf-low .gr-row,html.perf-low .md-o{animation:none!important;transition:none!important}
+/* accessibility drawer v1.6 */
+#ax-drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);z-index:9600;background:var(--surface);border-left:1px solid var(--line);box-shadow:-24px 0 60px -30px rgba(30,20,0,.55);display:flex;flex-direction:column;transform:translateX(104%);transition:transform .32s cubic-bezier(.2,.8,.2,1);zoom:1!important}
+#ax-drawer.on{transform:none}
+.ax-h{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 6px}.ax-h h3{margin:0}
+#ax-body{overflow:auto;padding:6px 18px 20px;flex:1;overscroll-behavior:contain}
+.ax-pre{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ax-p{text-align:left;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);display:grid;gap:3px;transition:transform .2s,border-color .2s}.ax-p:hover{transform:translateY(-2px);border-color:var(--yellow)}.ax-p b{font-size:13px}.ax-p em{font-style:normal;font-size:11.5px;color:var(--ink-3);line-height:1.35}
+.ax-sl{display:flex;align-items:center;gap:10px}.ax-sl input{flex:1;accent-color:var(--gold-ink,#b88400)}#ax-sv{float:right;font-weight:600;color:var(--gold-ink,#8a5a00)}
+@media(max-width:560px){#ax-drawer{top:auto;height:78vh;width:100vw;border-left:0;border-top:1px solid var(--line);border-radius:18px 18px 0 0;transform:translateY(104%)}#ax-drawer.on{transform:none}}
+html.a11y-calm #ax-drawer,html.perf-low #ax-drawer{transition-duration:.01s}
+/* extra a11y modes */
+html.a11y-gray{filter:grayscale(1)}
+html.a11y-narrow main,html.a11y-narrow .container{max-width:760px!important;margin-left:auto!important;margin-right:auto!important}
+html.a11y-narrow .rd-book{max-width:none}
+html.a11y-cursor,html.a11y-cursor *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M5 3l0 30 8-7 6 13 6-3-6-13 11-1z' fill='black' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,auto!important}
+html.a11y-cursor a,html.a11y-cursor button,html.a11y-cursor [data-act],html.a11y-cursor label{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M5 3l0 30 8-7 6 13 6-3-6-13 11-1z' fill='%23ffd23f' stroke='black' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3,pointer!important}
+#ax-ruler{position:fixed;left:0;right:0;top:0;height:100vh;pointer-events:none;z-index:9000}
+#ax-ruler i{position:absolute;left:0;right:0;background:rgba(20,12,0,.38)}#ax-ruler i:first-child{top:0;height:calc(var(--y,50vh) - 22px)}#ax-ruler i:last-child{top:calc(var(--y,50vh) + 22px);bottom:0}#ax-ruler b{position:absolute;left:0;right:0;top:calc(var(--y,50vh) - 22px);height:44px;box-shadow:0 0 0 2px rgba(255,210,63,.9)}
+html[data-tint]::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:8999;mix-blend-mode:multiply}
+html[data-tint=cream]::after{background:#fff0c4}html[data-tint=blue]::after{background:#cfe3ff}html[data-tint=green]::after{background:#d4f2dc}html[data-tint=rose]::after{background:#ffd9e4}
+html[data-theme=dark][data-tint]::after{mix-blend-mode:soft-light;opacity:.55}
+/* skip link */
+.skip-link{position:fixed;left:12px;top:-60px;z-index:10000;background:#fff;color:#000;padding:10px 16px;border-radius:10px;border:2px solid #000;font-weight:700;transition:top .2s}.skip-link:focus{top:12px}
 </style>
 </head>
 <body>
-<div id="app"></div><div id="overlay-root"></div><div id="toasts" aria-live="polite"></div>
+<a class="skip-link" href="#/" data-act="skip-main">Skip to main content</a><div id="app"></div><div id="overlay-root"></div><div id="toasts" aria-live="polite"></div>
 <noscript>WIND UP needs JavaScript enabled.</noscript>
 <script>
 'use strict';
@@ -1092,8 +1185,8 @@ removeResource(id){S.resources=S.resources.filter(r=>r.id!==id);S.ratings=S.rati
 
 /* ---------- UI primitives ---------- */
 function toast(msg,type=''){const t=document.createElement('div');t.className='toast '+type;t.innerHTML=(type==='err'||type==='warn'?icon('alert'):icon('check'))+`<span>${esc(msg)}</span>`;$('#toasts').appendChild(t);setTimeout(()=>{t.style.opacity=0;t.style.transition='.3s';setTimeout(()=>t.remove(),300)},3200)}
-function openModal({title,body,footer='',size='',onOpen,lock}){closeModal(true);const o=document.createElement('div');o.className='overlay';if(lock)o.dataset.lock='1';o.innerHTML=`<div class="modal ${size}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mh"><h3>${esc(title)}</h3>${lock?'':`<button class="icon-btn" data-act="close-modal" aria-label="Close">${icon('x')}</button>`}</div><div class="mb">${body}</div>${footer?`<div class="mf">${footer}</div>`:''}</div>`;$('#overlay-root').appendChild(o);const f=$('input,select,textarea',o);f&&setTimeout(()=>f.focus(),30);onOpen&&onOpen(o)}
-function closeModal(silent){if(silent!==true&&$('.overlay[data-lock]'))return;$('#overlay-root').innerHTML='';if(ui.confirm&&!silent){const r=ui.confirm;ui.confirm=null;r(false)}}
+function openModal({title,body,footer='',size='',onOpen,lock}){const was=$('.overlay')?ui.mPrev:document.activeElement;closeModal(true);ui.mPrev=was;const o=document.createElement('div');o.className='overlay';if(lock)o.dataset.lock='1';o.innerHTML=`<div class="modal ${size}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mh"><h3>${esc(title)}</h3>${lock?'':`<button class="icon-btn" data-act="close-modal" aria-label="Close">${icon('x')}</button>`}</div><div class="mb">${body}</div>${footer?`<div class="mf">${footer}</div>`:''}</div>`;$('#overlay-root').appendChild(o);const f=$('input,select,textarea',o)||$('.mb button,.mb a[href],.mh button',o);f&&setTimeout(()=>f.focus(),30);o.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const l=[...o.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])')].filter(x=>!x.disabled&&x.offsetParent!==null);if(!l.length)return;const i=l.indexOf(document.activeElement);if(i<0||(e.shiftKey&&i===0)){e.preventDefault();l[l.length-1].focus()}else if(!e.shiftKey&&i===l.length-1){e.preventDefault();l[0].focus()}});onOpen&&onOpen(o)}
+function closeModal(silent){if(silent!==true&&$('.overlay[data-lock]'))return;$('#overlay-root').innerHTML='';if(silent!==true){const pv=ui.mPrev;ui.mPrev=null;if(pv&&pv.focus&&document.contains(pv))try{pv.focus()}catch(e){}}if(ui.confirm&&!silent){const r=ui.confirm;ui.confirm=null;r(false)}}
 function confirmBox({title,message,ok='Confirm',danger=false}){return new Promise(res=>{openModal({title,body:`<p class="muted">${esc(message)}</p>`,footer:`<button class="btn" data-act="close-modal">Cancel</button><button class="btn primary ${danger?'danger':''}" data-act="confirm-yes">${esc(ok)}</button>`});ui.confirm=res})}
 function requireAuth(msg='Sign in to continue'){if(me())return true;openModal({title:msg,body:`<p class="muted">Create a free account or sign in to save, download and track resources.</p>`,footer:`<a class="btn" href="#/login" data-act="close-modal">Sign in</a><a class="btn primary" href="#/signup" data-act="close-modal">Create account</a>`});return false}
 
@@ -1190,7 +1283,7 @@ const cont=hist.filter(x=>prog(x.r.id)!=='completed').slice(0,4),lib=new Set([..
 const rec=visible().filter(r=>u.subjects.includes(r.subject)&&prog(r.id)!=='completed').sort((a,b)=>(b.year===u.year)-(a.year===u.year)||ratingOf(b.id).avg-ratingOf(a.id).avg).slice(0,4);
 const recent=[...visible()].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,4),papers=visible().filter(r=>r.type==='Past Paper').sort((a,b)=>b.downloads-a.downloads).slice(0,4);
 const cnt=s=>Object.values(d.progress).filter(v=>v===s).length;
-const html=`<div class="greet"><div><h1>${greeting()}, ${esc(u.name.split(' ')[0])}</h1><p class="muted">${u.year?esc(u.year)+' · ':''}${u.board?esc(u.board):'Ready to study?'}</p></div><form class="searchbox" style="max-width:380px;width:100%;height:40px" data-form="global-search">${icon('search')}<input name="q" placeholder="Search all resources" aria-label="Global search"></form></div>
+const html=`<div class="greet"><div><h1>${greeting()}, ${esc(String(u.name||u.username||'there').split(' ')[0])}</h1><p class="muted">${u.year?esc(u.year)+' · ':''}${u.board?esc(u.board):'Ready to study?'}</p></div><form class="searchbox" style="max-width:380px;width:100%;height:40px" data-form="global-search">${icon('search')}<input name="q" placeholder="Search all resources" aria-label="Global search"></form></div>
 <div class="stats">${statCard('Saved',d.bookmarks.length)}${statCard('In progress',cnt('in_progress'))}${statCard('Completed',cnt('completed'))}${statCard('Collections',d.collections.length)}</div>
 <div class="sec-h"><h3>Browse by subject</h3><a class="link sm" href="#/subjects">All subjects</a></div><div class="chips" style="margin-bottom:26px">${S.subjects.map(s=>`<a class="btn sm" href="#/subjects/${s.id}">${icon(s.icon)}${esc(s.name)}</a>`).join('')}</div>
 <div class="cols"><div class="stack">
@@ -1539,7 +1632,7 @@ function viewLab(){const l=LAB(),p=l.xp%100,c=l.chess;let body='';
 if(ui.labTab==='chess')body=ui.chess?`<div id="chess-area">${chessView()}</div>`:`<div id="chess-area">${chessSetupHTML()}</div>`;
 else if(ui.labTab==='snl')body=`<div id="sl-area">${slArea()}</div>`;else if(ui.labTab==='formulas')body=`<div id="fm-area">${formulasHTML()}</div>`;else if(ui.labTab==='planner')body=`<div id="pl-area">${plannerHTML()}</div>`;else if(ui.labTab==='badges')body=badgesHTML();else if(V12[ui.labTab])body=V12[ui.labTab]();
 else if(ui.labTab==='focus')body=`<div class="card pad" id="timer-area" style="max-width:620px;margin:0 auto">${timerHTML()}</div>`;else body=`<div id="deck-area">${decksHTML()}</div>`;
-const tabs=`<div class="tabs lab-tabs">${[['chess','Brain Chess'],['snl','Snakes & Ladders'],['daily','Daily Challenge'],['paper','Past Paper'],['focus','Focus Timer'],['rooms','Study Rooms'],['cards','Flashcards'],['formulas','Formulas'],['planner','Planner'],['streaks','Streaks'],['shop','Shop'],['badges','Badges']].map(([k,n])=>`<a class="tab ${ui.labTab===k?'active':''}" href="#/lab" data-act="labtab" data-t="${k}">${n}</a>`).join('')}</div>`;
+const tabs=`<div class="tabs lab-tabs">${[['chess','Brain Chess'],['snl','Snakes & Ladders'],['daily','Daily Challenge'],['paper','Past Paper'],['focus','Focus Timer'],['rooms','Study Rooms'],['cards','Flashcards'],['formulas','Formulas'],['planner','Planner'],['grades','Grades'],['read','Read Aloud'],['mood','Mood'],['streaks','Streaks'],['shop','Shop'],['badges','Badges']].map(([k,n])=>`<a class="tab ${ui.labTab===k?'active':''}" href="#/lab" data-act="labtab" data-t="${k}">${n}</a>`).join('')}</div>`;
 return{nav:'lab',title:'Study Lab',html:`${pageHead('Study Lab','Games and tools that make revision stick. Everything you do here earns XP.')}
 <div class="lab-top">${statCard('Level',lvl(l.xp),`<div class="xpbar" style="margin-top:8px"><i style="width:${p}%"></i></div>${p}/100 XP`)}${statCard('Day streak',curStreak(),`Best: ${l.best||0}`)}${statCard('Chess record',`${c.w}-${c.d}-${c.l}`,`${c.ok} correct · ${c.bad} wrong`)}${statCard('Snakes & Ladders',slPlayedToday()?'Played':'Ready',slPlayedToday()?'Next game in '+untilMidnight():'1 game per day')}${statCard('Focus time',l.focus.min+'m',plural(l.focus.n,'session'))}</div>${tabs}${body}`,mount(){timerPaint();slMount();v12Mount()}}}
 /* ---------- v11: Snakes & Ladders (1 game/day), badges, formula sheet, weekly planner ---------- */
@@ -1675,19 +1768,42 @@ const fmtX=s=>{s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.flo
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
 
 /* ===== Accessibility ===== */
-const A11Y={key:'windup_a11y',def:{font:0,size:100,contrast:0,calm:0,space:0,links:0},
-get(){try{return{...this.def,...JSON.parse(localStorage.getItem(this.key)||'{}')}}catch(e){return{...this.def}}},
+const A11Y={key:'windup_a11y',def:{font:0,size:100,contrast:0,calm:0,space:0,links:0,gray:0,cursor:0,ruler:0,tint:'',narrow:0},
+get(){try{const v={...this.def,...JSON.parse(localStorage.getItem(this.key)||'{}')};v.size=Math.max(80,Math.min(200,+v.size||100));return v}catch(e){return{...this.def}}},
 set(v){try{localStorage.setItem(this.key,JSON.stringify(v))}catch(e){}},
-apply(){const a=this.get(),h=document.documentElement,c=h.classList;c.toggle('a11y-font',!!a.font);c.toggle('a11y-contrast',!!a.contrast);c.toggle('a11y-calm',!!a.calm);c.toggle('a11y-space',!!a.space);c.toggle('a11y-links',!!a.links);const app=document.getElementById('app');if(app)app.style.zoom=a.size===100?'':String(a.size/100)}};
+apply(){const a=this.get(),h=document.documentElement,c=h.classList;['font','contrast','calm','space','links','gray','cursor','ruler','narrow'].forEach(k=>c.toggle('a11y-'+k,!!a[k]));
+if(a.tint)h.dataset.tint=a.tint;else delete h.dataset.tint;const app=document.getElementById('app');if(app)app.style.zoom=a.size===100?'':String(a.size/100);axRuler(!!a.ruler)}};
+let axRulerFn=null;
+function axRuler(on){let r=document.getElementById('ax-ruler');if(!on){if(r)r.remove();if(axRulerFn){removeEventListener('pointermove',axRulerFn);removeEventListener('scroll',axRulerFn)}axRulerFn=null;return}
+if(!r){r=document.createElement('div');r.id='ax-ruler';r.setAttribute('aria-hidden','true');r.innerHTML='<i></i><b></b><i></i>';document.body.appendChild(r)}
+if(!axRulerFn){axRulerFn=e=>{if(e&&e.clientY!=null)axRuler.y=e.clientY;const y=axRuler.y==null?innerHeight/2:axRuler.y;r.style.setProperty('--y',y+'px')};addEventListener('pointermove',axRulerFn,{passive:true});axRulerFn()}}
 A11Y.apply();
+const AX_PRESETS={dys:['Dyslexia friendly','Rounded font, roomy lines, larger text and a cream tint.',{font:1,space:1,size:115,tint:'cream'}],low:['Low vision','Big text, high contrast, underlined links and a big cursor.',{contrast:1,size:150,links:1,cursor:1}],focus:['Focus','Less motion, a reading ruler and a narrow column.',{calm:1,ruler:1,narrow:1,links:1}],calm:['Gentle on eyes','Greyscale, a soft tint and no motion.',{gray:1,calm:1,tint:'blue'}]};
 function a11yBody(){const a=A11Y.get(),row=(k,t,d)=>`<label class="ax-row"><span><b>${t}</b><em>${d}</em></span><input type="checkbox" class="ax-sw" data-change="a11y-tog" data-k="${k}" ${a[k]?'checked':''}></label>`;
-const pm=PERF.mode();return`<div class="ax"><div class="ax-size"><b>Device performance</b><div class="ax-perf">${[['low','phone','Low-end device','Lighter effects. Saves battery.'],['high','laptop','High-end device','All animations and 3D.']].map(([m,i,t,d])=>`<button class="ax-pm ${pm===m?'on':''}" data-act="perf-set" data-m="${m}" aria-pressed="${pm===m}">${icon(i)}<b>${t}</b><em>${d}</em></button>`).join('')}</div></div><div class="ax-size"><b>Text size</b><div class="row wrap">${[90,100,115,130,150].map(v=>`<button class="fchip ${a.size===v?'on':''}" data-act="a11y-size" data-v="${v}">${v===100?'Normal':v+'%'}</button>`).join('')}</div></div>
-${row('font','Easy-read font','Wider letters and words in a clear, rounded typeface that many dyslexic readers find easier.')}${row('space','Roomier lines','Extra line height so paragraphs are easier to track.')}${row('contrast','High contrast','Pure black and white with strong borders. Works in dark mode too.')}${row('links','Underline links and focus','Always underline links and show a thick outline on the item you are on.')}${row('calm','Reduce motion','Switch off animations, parallax and page-turn effects.')}
-<div class="row" style="justify-content:space-between;margin-top:6px"><span class="faint sm">Saved on this device.</span><button class="btn sm" data-act="a11y-reset">Reset all</button></div></div>`}
-labActions['a11y-open']=()=>openModal({title:'Accessibility',body:`<div id="ax-body">${a11yBody()}</div>`});
-const axRe=()=>{const b=$('#ax-body');if(b)b.innerHTML=a11yBody();A11Y.apply()};
+const pm=PERF.mode();
+return`<div class="ax"><div class="ax-size"><b>Quick setups</b><div class="ax-pre">${Object.entries(AX_PRESETS).map(([k,[t,d]])=>`<button class="ax-p" data-act="a11y-preset" data-k="${k}"><b>${t}</b><em>${d}</em></button>`).join('')}</div></div>
+<div class="ax-size"><b>Text size <span id="ax-sv">${a.size}%</span></b><div class="ax-sl"><button class="btn sm" data-act="a11y-sz" data-d="-10" aria-label="Smaller text">A−</button><input type="range" min="80" max="200" step="5" value="${a.size}" data-live="a11y-sizeR" aria-label="Text size in percent"><button class="btn sm" data-act="a11y-sz" data-d="10" aria-label="Larger text">A+</button></div></div>
+<div class="ax-size"><b>Colour tint</b><div class="row wrap" role="group" aria-label="Page tint">${[['','None'],['cream','Cream'],['blue','Blue'],['green','Green'],['rose','Rose']].map(([k,t])=>`<button class="fchip ${a.tint===k?'on':''}" data-act="a11y-tint" data-k="${k}" aria-pressed="${a.tint===k}">${t}</button>`).join('')}</div></div>
+${row('font','Easy-read font','Wider letters and words in a clear, rounded typeface that many dyslexic readers find easier.')}${row('space','Roomier lines','Extra line height so paragraphs are easier to track.')}${row('narrow','Narrow reading column','Keeps lines short so your eyes do not get lost.')}${row('ruler','Reading ruler','A highlighted strip follows your pointer to help you keep your place.')}${row('contrast','High contrast','Pure black and white with strong borders. Works in dark mode too.')}${row('gray','Greyscale','Remove colour for a calmer page.')}${row('cursor','Big cursor','A large, high-visibility pointer.')}${row('links','Underline links and focus','Always underline links and show a thick outline on the item you are on.')}${row('calm','Reduce motion','Switch off animations, parallax and page-turn effects.')}
+<div class="ax-size"><b>Listen</b><div class="row wrap"><button class="btn sm" data-act="a11y-read">Read selected text aloud</button><button class="btn sm ghost" data-act="a11y-readstop">Stop</button></div><em class="faint sm">Select any text on the page first.</em></div>
+<div class="ax-size"><b>Device performance</b><div class="ax-perf">${[['low','phone','Low-end device','Lighter effects. Saves battery.'],['high','laptop','High-end device','All animations and 3D.']].map(([m,i,t,d])=>`<button class="ax-pm ${pm===m?'on':''}" data-act="perf-set" data-m="${m}" aria-pressed="${pm===m}">${icon(i)}<b>${t}</b><em>${d}</em></button>`).join('')}</div></div>
+<div class="row" style="justify-content:space-between;margin-top:6px"><span class="faint sm">Saved on this device. Shortcut: Alt + A</span><button class="btn sm" data-act="a11y-reset">Reset all</button></div></div>`}
+let axPrev=null;
+function axOpen(){let d=document.getElementById('ax-drawer');if(d){axClose();return}axPrev=document.activeElement;d=document.createElement('aside');d.id='ax-drawer';d.setAttribute('role','dialog');d.setAttribute('aria-label','Accessibility settings');d.innerHTML=`<div class="ax-h"><h3>Accessibility</h3><button class="icon-btn" data-act="a11y-close" aria-label="Close accessibility panel">${icon('x')}</button></div><p class="faint sm" style="margin:0 18px 6px">Changes apply to the page behind straight away.</p><div id="ax-body">${a11yBody()}</div>`;document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add('on'));setTimeout(()=>{const x=d.querySelector('.icon-btn');x&&x.focus()},60);document.addEventListener('keydown',axKey,true)}
+function axClose(){const d=document.getElementById('ax-drawer');if(!d)return;document.removeEventListener('keydown',axKey,true);d.classList.remove('on');setTimeout(()=>d.remove(),260);if(axPrev&&axPrev.focus&&document.contains(axPrev))axPrev.focus();axPrev=null}
+function axKey(e){const d=document.getElementById('ax-drawer');if(!d)return;if(e.key==='Escape'){e.stopPropagation();axClose();return}
+if(e.key==='Tab'){const f=[...d.querySelectorAll('button,input,select,a[href],[tabindex]:not([tabindex="-1"])')].filter(x=>!x.disabled&&x.offsetParent!==null);if(!f.length)return;const i=f.indexOf(document.activeElement);if(!d.contains(document.activeElement)){e.preventDefault();f[0].focus()}else if(e.shiftKey&&i===0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}}}
+addEventListener('keydown',e=>{if(e.altKey&&!e.ctrlKey&&!e.metaKey&&(e.key==='a'||e.key==='A'||e.code==='KeyA')){const t=e.target;if(t&&/^(input|textarea|select)$/i.test(t.tagName)&&!e.altKey)return;e.preventDefault();axOpen()}});
+labActions['a11y-open']=()=>axOpen();labActions['a11y-close']=()=>axClose();
+const axRe=()=>{const b=$('#ax-body');if(b){const y=b.scrollTop;b.innerHTML=a11yBody();b.scrollTop=y}A11Y.apply()};
 labActions['a11y-size']=el=>{const a=A11Y.get();a.size=+el.dataset.v;A11Y.set(a);axRe()};
+labActions['a11y-sz']=el=>{const a=A11Y.get();a.size=Math.max(80,Math.min(200,a.size+ +el.dataset.d));A11Y.set(a);axRe()};
+labChanges['a11y-sizeR']=t=>{const a=A11Y.get();a.size=+t.value;A11Y.set(a);const s=$('#ax-sv');if(s)s.textContent=a.size+'%';clearTimeout(axRe.t);axRe.t=setTimeout(()=>A11Y.apply(),60)};
+labActions['a11y-tint']=el=>{const a=A11Y.get();a.tint=el.dataset.k;A11Y.set(a);axRe()};
+labActions['a11y-preset']=el=>{const p=AX_PRESETS[el.dataset.k];if(!p)return;A11Y.set({...A11Y.def,...p[2]});axRe();toast(p[0]+' applied')};
 labActions['a11y-reset']=()=>{A11Y.set({...A11Y.def});axRe()};
+labActions['a11y-read']=()=>readSelection();labActions['a11y-readstop']=()=>{if(window.speechSynthesis){RA.tok++;RA.st='idle';speechSynthesis.cancel()}};
+labActions['skip-main']=(el,e)=>{e.preventDefault();const m=$('main')||$('#app');if(m){m.setAttribute('tabindex','-1');m.focus({preventScroll:false})}};
 labChanges['a11y-tog']=t=>{const a=A11Y.get();a[t.dataset.k]=t.checked?1:0;A11Y.set(a);A11Y.apply()};
 
 /* ===== Daily Challenge ===== */
@@ -1831,9 +1947,117 @@ BADGES.push(
 ['shop','Treat yourself','Buy something in the Rewards Shop.',l=>(l.shop?.own||[]).length>=1,'sparkle'],
 ['rm1','Study buddy','Finish a Study Room session.',l=>(l.rooms?.done||0)>=1,'users'],
 ['hm14','Consistent','Study on 14 different days.',l=>Object.keys(l.days||{}).length>=14,'chart']);
+/* ===== v1.6: Grade Calculator, Read Aloud, Mood & Energy ===== */
+document.addEventListener('input',e=>{const t=e.target;if(t&&t.dataset&&t.dataset.live&&labChanges[t.dataset.live])labChanges[t.dataset.live](t)});
+
+/* ---------- Grade calculator ---------- */
+const GR=()=>{const l=LAB();return l.grades||(l.grades={rows:[],target:70,rem:20})};
+const GSCALE=[[90,'A*','4.0'],[80,'A','4.0'],[70,'B','3.0'],[60,'C','2.0'],[50,'D','1.0'],[40,'E','0.5'],[0,'U','0']];
+const gLetter=p=>GSCALE.find(x=>p>=x[0]);
+function gStats(){const g=GR(),rows=g.rows.filter(r=>r.max>0&&r.w>0),W=rows.reduce((a,r)=>a+r.w,0),S=rows.reduce((a,r)=>a+r.score/r.max*r.w,0);return{W,avg:W?S/W*100:null,S}}
+function gradesHTML(){const g=GR(),st=gStats(),L=st.avg==null?null:gLetter(st.avg);
+const rem=Math.max(0,Math.min(100,+g.rem||0)),tg=Math.max(0,Math.min(100,+g.target||0));
+let need=null;if(rem>0){need=(tg*(st.W+rem)-100*st.S)/rem}
+const needTxt=need==null?'Set how much of the course is still to come.':need>100?`You would need ${need.toFixed(0)}% — above full marks, so aim a little lower or ask for extra credit.`:need<=0?'You have already secured that target. Keep going!':`You need about <b>${need.toFixed(1)}%</b> across the remaining ${rem}% of the course to finish on ${tg}%.`;
+return`<div class="gr-grid"><div class="card pad"><h3 style="margin:0 0 4px">Your marks</h3><p class="faint sm" style="margin:0 0 12px">Add each test, paper or coursework piece with its weight.</p>
+<form class="gr-add" data-form="gr-add"><input class="input" name="name" placeholder="Name, e.g. Algebra test" maxlength="40" required aria-label="Assessment name"><input class="input" name="score" type="number" step="any" min="0" placeholder="Score" required aria-label="Score"><input class="input" name="max" type="number" step="any" min="1" placeholder="Out of" value="100" required aria-label="Out of"><input class="input" name="w" type="number" step="any" min="0.1" placeholder="Weight %" value="10" required aria-label="Weight in percent"><button class="btn primary">Add</button></form>
+${g.rows.length?`<div class="gr-list">${g.rows.map(r=>{const p=r.max?r.score/r.max*100:0;return`<div class="gr-row"><span class="gr-n"><b>${esc(r.name)}</b><small>${r.score} / ${r.max} · weight ${r.w}%</small></span><span class="gr-bar" aria-hidden="true"><i style="width:${Math.min(100,p)}%"></i></span><b class="gr-p">${p.toFixed(0)}%</b><button class="icon-btn" data-act="gr-del" data-id="${r.id}" aria-label="Remove ${esc(r.name)}">${icon('x')}</button></div>`}).join('')}</div>`:'<p class="faint" style="margin:16px 0 4px">Nothing yet. Add your first mark above, or <a href="#/lab" data-act="gr-demo">try an example</a>.</p>'}
+${g.rows.length?`<button class="btn ghost sm" data-act="gr-clear" style="margin-top:10px">Clear all</button>`:''}</div>
+<div class="card pad gr-res"><div class="gr-big" aria-live="polite"><span class="gr-l">${L?L[1]:'–'}</span><span><b>${st.avg==null?'No marks yet':st.avg.toFixed(1)+'%'}</b><small>${L?`GPA ${L[2]} · weights add to ${st.W}%`:'Weighted average'}</small></span></div>
+<h4 style="margin:18px 0 8px">What do I need?</h4><div class="gr-need"><label>Target %<input class="input" type="number" min="0" max="100" value="${tg}" data-live="gr-target" aria-label="Target percentage"></label><label>Course still to come %<input class="input" type="number" min="0" max="100" value="${rem}" data-live="gr-rem" aria-label="Percent of the course remaining"></label></div><p class="gr-ans" id="gr-ans" aria-live="polite">${needTxt}</p>
+<div class="gr-scale">${GSCALE.map(x=>`<span class="${L&&L[1]===x[1]?'on':''}"><b>${x[1]}</b>${x[0]}%+</span>`).join('')}</div></div></div>`}
+const grPaint=()=>{const a=$('#gr-area');if(a)a.innerHTML=gradesHTML()};
+labForms['gr-add']=(f,fd)=>{const name=String(fd.get('name')||'').trim(),score=+fd.get('score'),max=+fd.get('max'),w=+fd.get('w');if(!name||!(max>0)||!(w>0)||score<0||!isFinite(score)){toast('Check the numbers: score, out of and weight must be valid.','error');return}
+GR().rows.push({id:'g'+Date.now().toString(36)+Math.random().toString(36).slice(2,4),name,score,max,w});persist();addXP(3);checkBadges();grPaint()};
+labActions['gr-del']=el=>{const g=GR();g.rows=g.rows.filter(r=>r.id!==el.dataset.id);persist();grPaint()};
+labActions['gr-clear']=()=>confirmBox({title:'Clear all marks?',message:'This removes every mark in the grade calculator.',ok:'Clear',danger:true}).then(y=>{if(y){GR().rows=[];persist();grPaint()}});
+labActions['gr-demo']=(el,e)=>{e&&e.preventDefault();GR().rows=[{id:'d1',name:'Algebra test',score:42,max:50,w:15},{id:'d2',name:'Mock paper 1',score:68,max:100,w:25},{id:'d3',name:'Coursework',score:34,max:40,w:20}];persist();grPaint()};
+labChanges['gr-target']=t=>{GR().target=Math.max(0,Math.min(100,+t.value||0));persist();grAns()};labChanges['gr-rem']=t=>{GR().rem=Math.max(0,Math.min(100,+t.value||0));persist();grAns()};
+function grAns(){const a=$('#gr-ans');if(!a)return;const g=GR(),st=gStats(),rem=g.rem,need=rem>0?(g.target*(st.W+rem)-100*st.S)/rem:null;a.innerHTML=need==null?'Set how much of the course is still to come.':need>100?`You would need ${need.toFixed(0)}% — above full marks, so aim a little lower.`:need<=0?'You have already secured that target. Keep going!':`You need about <b>${need.toFixed(1)}%</b> across the remaining ${rem}% of the course to finish on ${g.target}%.`}
+V12.grades=()=>`<div id="gr-area">${gradesHTML()}</div>`;
+
+/* ---------- Read aloud ---------- */
+const RA={sents:[],i:0,st:'idle',voices:[],words:0};
+const raOK=()=>'speechSynthesis' in window&&'SpeechSynthesisUtterance' in window;
+const RAS=()=>{const l=LAB();return l.ra||(l.ra={rate:1,pitch:1,voice:'',count:0,text:''})};
+const RA_SAMPLE='Photosynthesis is the process plants use to turn light into chemical energy. Chlorophyll in the chloroplasts absorbs light, mainly red and blue. Carbon dioxide and water are converted into glucose and oxygen. The overall equation is six carbon dioxide plus six water, giving glucose plus six oxygen. Light, carbon dioxide and temperature all limit the rate of photosynthesis.';
+const raSplit=t=>(t.replace(/\s+/g,' ').trim().match(/[^.!?\n]+[.!?]*\s*/g)||[]).map(s=>s.trim()).filter(Boolean);
+function raVoices(){if(!raOK())return[];RA.voices=speechSynthesis.getVoices();return RA.voices}
+function raHTML(){const s=RAS();if(!raOK())return`<div class="card pad"><h3>Read aloud</h3><p>Your browser does not support speech. Try recent Chrome, Edge, Safari or Firefox.</p></div>`;
+const vs=raVoices();
+return`<div class="gr-grid"><div class="card pad"><h3 style="margin:0 0 4px">Paste or type your notes</h3><p class="faint sm" style="margin:0 0 10px">Hearing your notes read out helps you spot gaps and keeps you going when your eyes are tired.</p>
+<textarea class="textarea" id="ra-text" rows="9" maxlength="8000" placeholder="Paste text here…" aria-label="Text to read aloud" data-live="ra-text">${esc(s.text||'')}</textarea>
+<div class="row wrap" style="margin-top:10px;gap:8px"><button class="btn primary" data-act="ra-play" id="ra-play">${icon('arrow')} Play</button><button class="btn" data-act="ra-pause" id="ra-pause" disabled>Pause</button><button class="btn ghost" data-act="ra-stop" id="ra-stop" disabled>Stop</button><button class="btn ghost" data-act="ra-sample">Use a sample</button><button class="btn ghost" data-act="ra-sel">Read my selection</button></div></div>
+<div class="card pad"><h4 style="margin:0 0 10px">Voice and speed</h4><label class="ra-f">Voice<select class="select" id="ra-voice" data-change="ra-voice" aria-label="Voice">${vs.length?vs.map(v=>`<option value="${esc(v.name)}" ${v.name===s.voice?'selected':''}>${esc(v.name)} (${esc(v.lang)})</option>`).join(''):'<option value="">Default voice</option>'}</select></label>
+<label class="ra-f">Speed <b id="ra-rv">${s.rate.toFixed(1)}×</b><input type="range" min="0.5" max="2" step="0.1" value="${s.rate}" data-live="ra-rate" aria-label="Reading speed"></label>
+<label class="ra-f">Pitch <b id="ra-pv">${s.pitch.toFixed(1)}</b><input type="range" min="0.5" max="1.5" step="0.1" value="${s.pitch}" data-live="ra-pitch" aria-label="Voice pitch"></label>
+<div class="ra-prog" aria-hidden="true"><i id="ra-bar" style="width:0%"></i></div><p class="faint sm" id="ra-stat" aria-live="polite">Ready.</p>
+<div class="ra-view" id="ra-view" aria-label="Reading view" hidden></div></div></div>`}
+function raView(){const v=$('#ra-view');if(!v)return;v.hidden=!RA.sents.length;v.innerHTML=RA.sents.map((t,i)=>`<span class="ra-s" data-i="${i}">${esc(t)} </span>`).join('')}
+function raMark(){$$('#ra-view .ra-s').forEach((s,i)=>s.classList.toggle('on',i===RA.i&&RA.st==='play'));const on=$('#ra-view .ra-s.on');if(on&&on.scrollIntoView)on.scrollIntoView({block:'nearest',behavior:PERF.motionOff()?'auto':'smooth'});const b=$('#ra-bar');if(b)b.style.width=(RA.sents.length?RA.i/RA.sents.length*100:0)+'%'}
+function raBtns(){const p=$('#ra-play'),pa=$('#ra-pause'),s=$('#ra-stop');if(!p)return;p.innerHTML=`${icon('arrow')} ${RA.st==='pause'?'Resume':'Play'}`;p.disabled=RA.st==='play';pa.disabled=RA.st!=='play';s.disabled=RA.st==='idle';const t=$('#ra-stat');if(t)t.textContent=RA.st==='play'?`Reading sentence ${RA.i+1} of ${RA.sents.length}`:RA.st==='pause'?'Paused.':'Ready.'}
+function raSpeak(){if(RA.st!=='play')return;if(RA.i>=RA.sents.length){raDone();return}
+const u=new SpeechSynthesisUtterance(RA.sents[RA.i]),s=RAS();u.rate=s.rate;u.pitch=s.pitch;const v=RA.voices.find(x=>x.name===s.voice);if(v){u.voice=v;u.lang=v.lang}
+const my=++RA.tok;u.onend=()=>{if(RA.tok!==my||RA.st!=='play')return;RA.i++;raMark();raSpeak()};u.onerror=e=>{if(RA.tok!==my)return;if(e.error==='canceled'||e.error==='interrupted')return;RA.st='idle';raBtns();toast('Speech stopped: '+(e.error||'error'),'error')};
+RA.cur=u;speechSynthesis.speak(u);raMark()}
+RA.tok=0;
+function raDone(){const words=RA.words;RA.st='idle';RA.i=0;raMark();raBtns();const b=$('#ra-bar');if(b)b.style.width='100%';if(me()&&words>=40){const s=RAS();s.count++;persist();addXP(8);checkBadges();toast('Finished listening. +8 XP','success')}}
+function raStart(text,fromSel){text=String(text||'').trim();if(!text){toast('Add some text first.','error');return}
+raStop(true);RA.sents=raSplit(text);RA.i=0;RA.words=text.split(/\s+/).length;RA.st='play';raView();raBtns();raSpeak()}
+function raStop(silent){if(!raOK())return;RA.tok++;RA.st='idle';try{speechSynthesis.cancel()}catch(e){}if(!silent){RA.i=0;raMark();raBtns()}}
+labActions['ra-play']=()=>{if(RA.st==='pause'){RA.st='play';raBtns();raSpeak();return}raStart($('#ra-text')?.value)};
+labActions['ra-pause']=()=>{if(RA.st!=='play')return;RA.tok++;RA.st='pause';try{speechSynthesis.cancel()}catch(e){}raMark();raBtns()};
+labActions['ra-stop']=()=>{raStop();RA.st='idle';raBtns()};
+labActions['ra-sample']=()=>{const t=$('#ra-text');if(t){t.value=RA_SAMPLE;RAS().text=RA_SAMPLE;persist()}};
+labActions['ra-sel']=()=>{const t=getSelection().toString()||($('#ra-text')&&$('#ra-text').value.substring($('#ra-text').selectionStart,$('#ra-text').selectionEnd));if(!t.trim()){toast('Select some text on the page first, then press this.','');return}raStart(t,1)};
+labChanges['ra-voice']=t=>{RAS().voice=t.value;persist()};
+labChanges['ra-rate']=t=>{RAS().rate=+t.value;const e=$('#ra-rv');if(e)e.textContent=(+t.value).toFixed(1)+'×';persist()};
+labChanges['ra-pitch']=t=>{RAS().pitch=+t.value;const e=$('#ra-pv');if(e)e.textContent=(+t.value).toFixed(1);persist()};
+labChanges['ra-text']=t=>{RAS().text=t.value;clearTimeout(RA.sv);RA.sv=setTimeout(persist,600)};
+V12.read=()=>`<div id="ra-area">${raHTML()}</div>`;
+if(raOK()){speechSynthesis.onvoiceschanged=()=>{raVoices();const sel=$('#ra-voice');if(sel&&RA.voices.length)sel.innerHTML=RA.voices.map(v=>`<option value="${esc(v.name)}" ${v.name===RAS().voice?'selected':''}>${esc(v.name)} (${esc(v.lang)})</option>`).join('')}}
+addEventListener('hashchange',()=>{if(RA.st!=='idle')raStop()});addEventListener('pagehide',()=>{if(raOK())speechSynthesis.cancel()});
+{const o=labActions.labtab;labActions.labtab=(el,e)=>{if(RA.st!=='idle')raStop();o(el,e)}}
+/* global helper used by the accessibility panel */
+function readSelection(){const t=getSelection().toString().trim();if(!t){toast('Select some text on the page first.','');return}RA.sents=raSplit(t);raStop(true);RA.words=t.split(/\s+/).length;RA.i=0;RA.st='play';raSpeak()}
+
+/* ---------- Mood & energy ---------- */
+const MD=()=>{const l=LAB();return l.mood||(l.mood={log:[]})};
+const MOODS=[['Rough','😞'],['Low','😕'],['Okay','😐'],['Good','🙂'],['Great','😄']],ENERGY=['Drained','Tired','Steady','Charged','Buzzing'],MTAGS=['Slept well','Slept badly','Stressed','Exam soon','Hungry','Motivated','Distracted','Calm'],MSLOT=['Morning','Afternoon','Evening'];
+const slotNow=()=>{const h=new Date().getHours();return h<12?0:h<17?1:2};
+function mdSuggest(m,e){if(e<=2&&m<=2)return{t:'Go gently today',d:'Low mood and low energy: do one tiny thing, like five flashcards, then rest. Talking to a friend, teacher or someone you trust can also help.',tab:'cards',b:'Five flashcards'};
+if(e<=2)return{t:'Short and easy',d:'Your energy is low. A 10 minute focus block on something light will count more than forcing a long session.',tab:'focus',b:'Start a short timer'};
+if(m<=2)return{t:'Start with something you can win',d:'A quick, friendly puzzle can lift your mood.',tab:'snl',b:'Snakes & Ladders'};
+if(e>=4&&m>=4)return{t:'Use this momentum',d:'You feel great. Take on your hardest topic now with a past paper.',tab:'paper',b:'Open Past Paper'};
+if(e>=4)return{t:'Great energy',d:'Tackle something demanding: Brain Chess questions or a past paper question set.',tab:'chess',b:'Play Brain Chess'};
+return{t:'A steady session',d:'A normal focus block will go well. Plan it in the Planner first.',tab:'planner',b:'Open the Planner'}}
+function moodHTML(){const md=MD(),k=dkey(),today=md.log.find(x=>x.d===k),sel=ui.mdSel||(ui.mdSel={m:today?.m??3,e:today?.e??3,tags:today?.tags||[],slot:today?.slot??slotNow()});
+const last=md.log.slice(-14),avg=a=>a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):'–';
+const bySlot=MSLOT.map((n,i)=>{const r=md.log.filter(x=>x.slot===i);return[n,r.length?r.reduce((a,x)=>a+x.e,0)/r.length:0,r.length]}),best=md.log.length>=5?bySlot.filter(x=>x[2]).sort((a,b)=>b[1]-a[1])[0]:null;
+const sug=today?mdSuggest(today.m,today.e):null;
+const W=520,H=130,n=last.length,bw=n?Math.min(26,(W-20)/n-6):20;
+const chart=n?`<svg class="md-chart" viewBox="0 0 ${W} ${H+22}" role="img" aria-label="Your mood and energy over the last ${n} check-ins">${[1,2,3,4,5].map(v=>`<line x1="0" x2="${W}" y1="${H-(v-.5)/5*H}" y2="${H-(v-.5)/5*H}" stroke="currentColor" opacity=".08"/>`).join('')}${last.map((x,i)=>{const cx=10+i*((W-20)/Math.max(n,1))+ (W-20)/Math.max(n,1)/2;return`<rect x="${cx-bw/2-1}" y="${H-x.e/5*H}" width="${bw/2}" height="${x.e/5*H}" rx="3" fill="var(--yellow)"/><rect x="${cx+1}" y="${H-x.m/5*H}" width="${bw/2}" height="${x.m/5*H}" rx="3" fill="var(--gold-ink,#8a5a00)" opacity=".75"/><text x="${cx}" y="${H+14}" font-size="9" text-anchor="middle" fill="currentColor" opacity=".55">${x.d.slice(8)}</text>`}).join('')}</svg><div class="md-key"><span><i style="background:var(--yellow)"></i>Energy</span><span><i style="background:var(--gold-ink,#8a5a00);opacity:.75"></i>Mood</span></div>`:'<p class="faint">Your chart appears after your first check-in.</p>';
+return`<div class="gr-grid"><div class="card pad"><h3 style="margin:0 0 4px">How are you today?</h3><p class="faint sm" style="margin:0 0 14px">Takes ten seconds. Stored only in this browser.</p>
+<fieldset class="md-set"><legend>Mood</legend><div class="md-opts">${MOODS.map(([t,e],i)=>`<button type="button" class="md-o ${sel.m===i+1?'on':''}" data-act="md-m" data-v="${i+1}" aria-pressed="${sel.m===i+1}"><span aria-hidden="true">${e}</span><small>${t}</small></button>`).join('')}</div></fieldset>
+<fieldset class="md-set"><legend>Energy</legend><div class="md-opts">${ENERGY.map((t,i)=>`<button type="button" class="md-o md-en ${sel.e===i+1?'on':''}" data-act="md-e" data-v="${i+1}" aria-pressed="${sel.e===i+1}"><span class="md-batt" aria-hidden="true">${[1,2,3,4,5].map(j=>`<i class="${j<=i+1?'f':''}"></i>`).join('')}</span><small>${t}</small></button>`).join('')}</div></fieldset>
+<fieldset class="md-set"><legend>Time of day</legend><div class="md-tags">${MSLOT.map((t,i)=>`<button type="button" class="md-t ${sel.slot===i?'on':''}" data-act="md-s" data-v="${i}" aria-pressed="${sel.slot===i}">${t}</button>`).join('')}</div></fieldset>
+<fieldset class="md-set"><legend>What is going on? (optional)</legend><div class="md-tags">${MTAGS.map(t=>`<button type="button" class="md-t ${sel.tags.includes(t)?'on':''}" data-act="md-tag" data-v="${t}" aria-pressed="${sel.tags.includes(t)}">${t}</button>`).join('')}</div></fieldset>
+<button class="btn primary" data-act="md-save">${today?'Update today\'s check-in':'Save check-in'}</button></div>
+<div class="card pad"><h3 style="margin:0 0 8px">${sug?esc(sug.t):'Your plan for today'}</h3>${sug?`<p style="margin:0 0 12px">${esc(sug.d)}</p><a class="btn primary" href="#/lab" data-act="labtab" data-t="${sug.tab}">${esc(sug.b)}</a>`:'<p class="faint">Save a check-in and I will suggest what kind of session suits how you feel.</p>'}
+<h4 style="margin:20px 0 8px">Last ${n||14} days</h4>${chart}
+<div class="md-sum"><span><b>${avg(last.map(x=>x.m))}</b>avg mood</span><span><b>${avg(last.map(x=>x.e))}</b>avg energy</span><span><b>${md.log.length}</b>check-ins</span></div>
+${best?`<p class="md-best">You tend to have the most energy in the <b>${best[0].toLowerCase()}</b>. Plan hard topics then.</p>`:md.log.length?'<p class="faint sm">Five check-ins unlock your best time of day.</p>':''}
+<p class="faint sm" style="margin-top:12px">Feeling overwhelmed? This tool is not a substitute for people. Please talk to a teacher, parent or someone you trust.</p></div></div>`}
+const mdPaint=()=>{const a=$('#md-area');if(a)a.innerHTML=moodHTML()};
+labActions['md-m']=el=>{ui.mdSel.m=+el.dataset.v;mdPaint()};labActions['md-e']=el=>{ui.mdSel.e=+el.dataset.v;mdPaint()};labActions['md-s']=el=>{ui.mdSel.slot=+el.dataset.v;mdPaint()};
+labActions['md-tag']=el=>{const t=ui.mdSel.tags,v=el.dataset.v,i=t.indexOf(v);i<0?t.push(v):t.splice(i,1);mdPaint()};
+labActions['md-save']=()=>{const md=MD(),k=dkey(),s=ui.mdSel,e={d:k,m:s.m,e:s.e,slot:s.slot,tags:[...s.tags]},i=md.log.findIndex(x=>x.d===k);const first=i<0;if(first)md.log.push(e);else md.log[i]=e;md.log=md.log.slice(-120);persist();if(first){addXP(5);toast('Check-in saved. +5 XP','success')}else toast('Check-in updated','success');checkBadges();mdPaint()};
+V12.mood=()=>`<div id="md-area">${moodHTML()}</div>`;
+BADGES.push(['gc1','Number cruncher','Add 3 marks to the grade calculator.',l=>(l.grades?.rows||[]).length>=3,'chart'],['ra1','Good listener','Listen to a full read aloud.',l=>(l.ra?.count||0)>=1,'message'],['md5','Self aware','Do 5 mood and energy check-ins.',l=>(l.mood?.log||[]).length>=5,'sparkle']);
 /* ---------- v1.5: News & version history ---------- */
-const APP_VERSION='1.5';
+const APP_VERSION='1.6';
 const NEWS=[
+{v:'1.6',t:'Polish and wellbeing',s:'Three new Lab tools, a cinematic book opening, smoother page folds and a stronger Accessibility panel.',items:[['new','Grade Calculator: weighted marks, letter grade, GPA and a what-do-I-need target planner.'],['new','Read Aloud: paste notes and hear them read with the current sentence highlighted.'],['new','Mood and Energy check-in: ten seconds a day, with session suggestions and a two week chart.'],['new','Three more books and a seventh shelf, twenty-three in total, plus three badges.'],['up','New book opening: the book flies out as a closed cover, swings open, then the pages appear.'],['up','Smoother page folds in the reader and when changing pages.'],['up','Accessibility panel: presets, live preview, reading ruler, big cursor, greyscale, dyslexia-friendly spacing and a read-selection button.'],['fix','A full round of bug hunting across every page, dialog and dark mode.']],link:['#/lab','Open the Study Lab']},
 {v:'1.5',t:'Everyday study',s:'Six new study tools, a device performance switch and this News page.',items:[
 ['new','Daily Challenge: one question a day, the same for everyone, with a streak bonus.'],['new','Past Paper Mode: a timed exam with answer boxes, self-marking and a grade estimate.'],['new','Study Rooms: share a code and focus together on one timer.'],['new','Streak Calendar: a six month heat-map that fills in as you earn XP.'],['new','Rewards Shop: spend XP on colour themes, highlighter colours and avatar rings.'],['new','Accessibility panel: text size, easy-read font, high contrast, roomier lines and reduce motion.'],['new','Low-end and high-end device switch: tap the phone or laptop icon in the header.'],['new','This News page, with the full version history.'],['up','Six more books on the shelf, now twenty in total, and six more badges.'],['fix','Dark mode button no longer swaps the accessibility icon.']],link:['#/lab','Open the Study Lab']},
 {v:'1.4',t:'More to play',s:'Snakes & Ladders, formulas, a planner, badges and a guided tour.',items:[
@@ -1900,7 +2124,7 @@ ${dd('÷','left:6%;top:16%;font-size:84px','f',.3)}${dd('×','right:8%;top:12%;f
 
 <section class="section lp-new" id="new"><div class="container">${secHead('Fresh on the shelf','Six more ways to <span class="hl">study smarter.</span>','Take a daily challenge, sit a timed paper, revise with friends, watch your streaks, spend your XP and set the site up the way you like. Every one has its own book on the shelf below.')}
 <div class="tiles">${[['daily','flag','Daily Challenge','One question a day, the same for everyone. Build a streak for bonus XP.','dice'],['paper','file','Past Paper Mode','A real countdown, answer boxes and self-marking with a grade estimate.','pp'],['rooms','users','Study Rooms','Share a code and focus on one clock with your friends.','wk'],['streaks','chart','Streak Calendar','A six month heat-map that lights up every day you study.','hmx'],['shop','star','Rewards Shop','Spend XP on colour themes, highlighters and avatar rings.','md'],['a11y','eye','Accessibility','Bigger text, an easy-read font, high contrast and less motion.','fx']].map(([id,ic,t,d,k],i)=>`<a class="tile rv" href="#/" data-act="open-vol" data-b="${id}" style="--d:${i*.08}s"><span class="tile-glow"></span><span class="tile-ic">${icon(ic)}</span><div class="tile-art ${k}" aria-hidden="true">${k==='dice'?'<i></i><i></i><i></i><i></i><i></i>':k==='fx'?'Aa':k==='wk'?'<b></b><b></b><b></b><b></b><b></b><b></b><b></b>':k==='pp'?'<span class="ppt">42:10</span>':k==='hmx'?'<s></s><s class="a"></s><s></s><s class="b"></s><s class="c"></s><s></s><s class="a"></s>':'<u></u><u></u><u></u>'}</div><h3>${t}</h3><p>${d}</p><span class="tile-go">Open the book ${icon('chevR')}</span></a>`).join('')}</div></div></section>
-<section class="section lp-stats"><div class="container"><div class="statband rv">${[[20,'books on the shelf'],[10,'subjects covered'],[22,'badges to earn'],[30,'formulas and counting']].map(([n,l])=>`<div><b><span data-count="${n}">0</span>${n===30?'+':''}</b><span>${l}</span></div>`).join('')}</div></div></section>
+<section class="section lp-stats"><div class="container"><div class="statband rv">${[[23,'books on the shelf'],[10,'subjects covered'],[25,'badges to earn'],[30,'formulas and counting']].map(([n,l])=>`<div><b><span data-count="${n}">0</span>${n===30?'+':''}</b><span>${l}</span></div>`).join('')}</div></div></section>
 <section class="section lp-news"><div class="container"><div class="newsband rv"><div><span class="badge warn">Version ${APP_VERSION}</span><h2>What's <span class="hl">new</span></h2><p class="muted">Six study tools, a low-end and high-end device switch and a full version history from 1.1 to ${APP_VERSION}.</p><a class="btn primary" href="#/news">${icon('news')} Read the news</a></div><ol class="nb-list">${NEWS.map((n,i)=>`<li style="--d:${i*.07}s"><b>${n.v}</b><span>${esc(n.t)}</span></li>`).join('')}</ol></div></div></section>
 <section class="section lp-day"><div class="container">${secHead('A day with WIND UP','From first search to <span class="hl">last flashcard.</span>')}
 <ol class="daytl">${[['Morning','Find a past paper','Search by subject, topic or exam board and open the preview.'],['Afternoon','Plan and focus','Drop tasks in the planner, then run a focus session.'],['Evening','Test yourself','Brain Chess and flashcards turn revision into a game.'],['Bedtime','Roll the dice','Play today\'s Snakes &amp; Ladders and collect a badge.']].map(([w,t,d],i)=>`<li class="rv" style="--d:${i*.1}s"><span class="dt">${w}</span><div><b>${t}</b><p>${d}</p></div></li>`).join('')}</ol></div></section>
@@ -1981,6 +2205,24 @@ pp(`<h4>Questions from your subjects</h4>${chessMock}<p class="pl" style="margin
 pp(`<span class="pe">The Study Lab</span><h3>More tools, and a <span class="hl in">scoreboard.</span></h3>${pul([['timer','Focus timer','Pomodoro-style sessions with short and long breaks. Finish a session and you earn XP.'],['layers','Flashcards','Build your own decks and review them with spaced repetition, so the cards you keep getting wrong come back sooner.'],['sparkle','XP, levels and streaks','Everything you do in the Lab earns XP. Study on consecutive days and your streak grows.']])}`),
 pp(`<h4>Choose your difficulty</h4><p class="pl">Before a game you pick the question subjects, the computer level, whether questions appear on every move or only on captures, and what happens when you get one wrong.</p>${chips(['Easy','Medium','Hard','Captures only','Every move','Lose the move','Lose a piece'])}<a class="btn primary" href="#/lab">Open the Study Lab</a>`)]]},
 
+{id:'grade',ic:'chart',t:'Grade Calculator',tip:'Weighted marks and targets',st:'Grade Calculator',c1:'#2f6b4f',c2:'#1d4a35',ct:'#fff3c4',w:58,h:276,d:178,lean:2,s:[[
+pp(`<span class="pe">Marks</span><h3>Know your grade, <span class="hl in">before the results.</span></h3><p class="pl">Add every test, paper and coursework piece with its weight. The calculator gives your weighted average and a letter grade.</p>${pul([['chart','Weighted average','Each mark counts for exactly as much as its weight.'],['star','Letter and GPA','See A* to U and a 4.0 GPA estimate update live.'],['flag','Target planner','Choose a target and see what you need on the rest of the course.']])}`),
+pp(`<h4>An example</h4><div class="pfig"><div class="gr-row" style="animation:none"><span class="gr-n"><b>Mock paper 1</b><small>68 / 100 · weight 25%</small></span><span class="gr-bar"><i style="width:68%"></i></span><b class="gr-p">68%</b><span></span></div></div><p class="pl" style="margin-top:12px">Your marks stay in this browser, so you can come back and add the next one.</p>`)],[
+pp(`<span class="pe">Target planner</span><h3>What do I need <span class="hl in">to hit a B?</span></h3>${pnum([['Set a target','Type the percentage you are aiming for.'],['Say what is left','Enter how much of the course is still to come.'],['Read the answer','The page works out the average you need from here.']])}`),
+pp(`<h4>Earn a badge</h4><p class="pl">Add three marks and you unlock Number cruncher.</p>${chips(['Weighted average','Letter grade','GPA','Target planner'])}<a class="btn primary" href="#/lab" data-act="labgo" data-t="grades">Open the grade calculator</a>`)]]},
+
+{id:'read',ic:'message',t:'Read Aloud',tip:'Hear your notes',st:'Read Aloud',c1:'#274c7a',c2:'#183457',ct:'#ffe9a3',w:56,h:270,d:176,lean:-2,s:[[
+pp(`<span class="pe">Listen</span><h3>Hear your notes, <span class="hl in">sentence by sentence.</span></h3><p class="pl">Paste any text and WIND UP reads it aloud with the current sentence highlighted, so you can follow along or rest your eyes.</p>${pul([['message','Pick a voice','Use any voice your device offers.'],['timer','Your speed','Slow it down for hard topics or speed it up to revise fast.'],['star','Highlighted sentence','The sentence being read lights up as it plays.']])}`),
+pp(`<h4>Pause and resume</h4><p class="pl">Pause when you need to think and resume from the same sentence. You can also select text anywhere on the page and press Read my selection.</p>${chips(['Play','Pause','Resume','Stop','Read my selection'])}`)],[
+pp(`<span class="pe">Accessibility too</span><h3>Made for <span class="hl in">every learner.</span></h3><p class="pl">Reading aloud helps with dyslexia, tired eyes and revising on the move. The Accessibility panel has a Read selection button too.</p>`),
+pp(`<h4>Earn a badge</h4><p class="pl">Listen to a full read of 40 words or more to unlock Good listener.</p><a class="btn primary" href="#/lab" data-act="labgo" data-t="read">Open Read Aloud</a>`)]]},
+
+{id:'mood',ic:'sparkle',t:'Mood & Energy',tip:'A ten second check-in',st:'Mood & Energy',c1:'#8a4a73',c2:'#5d2f4d',ct:'#ffe9a3',w:60,h:280,d:180,lean:1,s:[[
+pp(`<span class="pe">Check in</span><h3>Ten seconds, <span class="hl in">every day.</span></h3><p class="pl">Say how your mood and energy are. WIND UP suggests a kind of session that fits, from a few flashcards to a full past paper.</p>${pul([['sparkle','Mood and energy','Five simple levels for each.'],['clock','Time of day','Learn when you really study best.'],['chart','Your trend','A bar chart of the last two weeks.']])}`),
+pp(`<h4>Private by design</h4><p class="pl">Check-ins are saved only in this browser. If things feel heavy, the page reminds you to talk to someone you trust.</p>${chips(['Mood','Energy','Tags','Best time','Trend'])}`)],[
+pp(`<span class="pe">A suggestion that fits</span><h3>Low energy? <span class="hl in">Go small.</span></h3><p class="pl">Tired days get a short focus block. Great days get a hard past paper. The suggestion changes with how you feel.</p>`),
+pp(`<h4>Earn a badge</h4><p class="pl">Do five check-ins and unlock Self aware.</p><a class="btn primary" href="#/lab" data-act="labgo" data-t="mood">Open the check-in</a>`)]]},
+
 {id:'faq',ic:'search',t:'Questions & Answers',tip:'Everything else, answered',st:'Questions',c1:'#fff2bf',c2:'#efdd9b',ct:'#8a5a00',w:50,h:264,d:170,s:[[
 pp(`<span class="pe">Questions</span><h3>Everything else, <span class="hl in">answered.</span></h3>${pqs([['Who can upload resources?','Teachers. Verified teachers publish straight away. Unverified teachers can still upload, but an administrator reviews each file before it appears.'],['How do teachers get verified?','They send a request with their school and an optional staff-page link, and an administrator approves or rejects it.'],['Can I preview before downloading?','Yes, every resource has an in-browser PDF preview. Downloading, bookmarking and rating need a free account.']])}`),
 pp(`<h4>More questions</h4>${pqs([['What can I track as a student?','Exam dates with a live countdown, progress on every resource, recently opened documents, bookmarks and your own collections.'],['What if a resource is wrong or broken?','Anyone signed in can report it with a reason, and administrators can remove it, resolve the report or dismiss it.'],['Which subjects and year groups?','Ten subjects, Years 7 to 13 and the AQA, Edexcel, OCR, Cambridge, IB and WJEC boards. Admins can add more at any time.']])}`)]]},
@@ -2010,8 +2252,8 @@ pp(`<h4>This week</h4><div class="pfig"><div class="pl-day today" style="animati
 pp(`<span class="pe">Plan your week</span><h3>Small steps, <span class="hl in">steady XP.</span></h3>${pul([['check','+5 XP per task','Every finished task is rewarded once.'],['trend','Weekly progress','A bar shows how much of the week is done.'],['lock','Private to you','Your plan is saved to your own account.']])}`),
 pp(`<h4>Pairs well with</h4><p class="pl">Add exam countdowns from your dashboard, then schedule the revision here.</p>${chips(['7 day view','Today highlight','Progress bar','+5 XP'])}<a class="btn primary" href="#/lab" data-act="labgo" data-t="planner">Open the planner</a>`)]]},
 
-{id:'badges',ic:'shield',t:'Achievements',tip:'Twenty-two badges to earn',st:'Achievements',c1:'#7a2f3a',c2:'#4e1c25',ct:'#ffe9a3',w:58,h:274,d:178,lean:-2,s:[[
-pp(`<span class="pe">Rewards</span><h3>Twenty-two badges, <span class="hl in">earned by studying.</span></h3><p class="pl">Badges unlock on their own as you use the Lab. Locked ones stay grey until you earn them.</p>${pul([['trend','Levels','Reach level 3, 5 and 10.'],['calendar','Streaks','Study three and seven days in a row.'],['shield','Games','Win at chess, win at Snakes & Ladders, dodge snakes.'],['timer','Focus','Finish sessions and stack up focus minutes.']])}`),
+{id:'badges',ic:'shield',t:'Achievements',tip:'Twenty-five badges to earn',st:'Achievements',c1:'#7a2f3a',c2:'#4e1c25',ct:'#ffe9a3',w:58,h:274,d:178,lean:-2,s:[[
+pp(`<span class="pe">Rewards</span><h3>Twenty-five badges, <span class="hl in">earned by studying.</span></h3><p class="pl">Badges unlock on their own as you use the Lab. Locked ones stay grey until you earn them.</p>${pul([['trend','Levels','Reach level 3, 5 and 10.'],['calendar','Streaks','Study three and seven days in a row.'],['shield','Games','Win at chess, win at Snakes & Ladders, dodge snakes.'],['timer','Focus','Finish sessions and stack up focus minutes.']])}`),
 pp(`<h4>A medal case</h4><div class="pfig"><div class="badge-grid" style="grid-template-columns:repeat(3,1fr);gap:8px">${[['sparkle','First steps',1],['calendar','On a roll',1],['shield','Checkmate',0]].map(([i,t,g])=>`<div class="bdg ${g?'got':''}" style="animation:none;padding:10px 4px"><div class="medal" style="width:40px;height:40px">${icon(i)}</div><b style="font-size:11px">${t}</b></div>`).join('')}</div></div>`)],[
 pp(`<span class="pe">Rewards</span><h3>Pop-ups, <span class="hl in">confetti</span> and a medal case.</h3><p class="pl">A toast appears the moment a badge unlocks, and the Badges tab shows the date you earned each one.</p>${chips(['22 badges','Unlock toasts','Dates earned','Progress bar'])}`),
 pp(`<h4>Start collecting</h4><p class="pl">Your first badge unlocks after your first XP. Jump into the Lab and play a round.</p><a class="btn primary" href="#/lab" data-act="labgo" data-t="badges">See my badges</a>`)]]},
@@ -2062,20 +2304,20 @@ const HOUR=P(60,104,`<rect x="4" y="2" width="52" height="9" rx="3" fill="#8a5a0
 const END=`<span class="bookend" aria-hidden="true"><i></i><b></b></span>`;
 const STACK=`<span class="decor" aria-hidden="true"><i style="width:calc(112px*var(--k));background:linear-gradient(180deg,#9a6a10,#7a5208)"></i><i style="width:calc(98px*var(--k));background:linear-gradient(180deg,#f7e8b0,#e6d28a);transform:translateX(5px)"></i><i style="width:calc(106px*var(--k));background:linear-gradient(180deg,#3a3016,#241c0a);transform:translateX(-4px)"></i><i style="width:calc(90px*var(--k));background:linear-gradient(180deg,#f6bd1c,#d99a00);transform:translateX(3px)"></i></span>`;
 const KNIGHT=`<span class="knight" aria-hidden="true">♞</span>`;
-const SHELVES=[['Start here','Volume I to III',['about','how','subjects'],`${PLANT}`,STACK+END],['Choose your role','Volume IV to VI',['students','teachers','admins'],GLOBE,KNIGHT],['The Study Lab','Volume VII to X',['lab','snl','daily','paper'],CLOCK,HOUR],['Study tools','Volume XI to XIV',['formulas','planner','rooms','streaks'],CUP,PLANT],['Rewards and comfort','Volume XV to XVII',['badges','shop','a11y'],STACK,KNIGHT],['Questions and beginnings','Volume XVIII to XX',['faq','demo','start'],GLOBE,`${PLANT}${END}`]];
+const SHELVES=[['Start here','Volume I to III',['about','how','subjects'],`${PLANT}`,STACK+END],['Choose your role','Volume IV to VI',['students','teachers','admins'],GLOBE,KNIGHT],['The Study Lab','Volume VII to X',['lab','snl','daily','paper'],CLOCK,HOUR],['Study tools','Volume XI to XIV',['formulas','planner','rooms','streaks'],CUP,PLANT],['Rewards and comfort','Volume XV to XVII',['badges','shop','a11y'],STACK,KNIGHT],['Questions and beginnings','Volume XVIII to XX',['grade','read','mood'],PLANT,CLOCK],['Questions and beginnings','Volume XXI to XXIII',['faq','demo','start'],GLOBE,`${PLANT}${END}`]];
 function volHTML(b,i){const fs=Math.max(12,Math.min(b.w*.4,(b.h-120)/((b.st||b.t).length*.62)));
 const rib=['how','teachers','lab','start','snl','badges','paper','shop'].includes(b.id)?`<i class="rib" aria-hidden="true"></i>`:'';
 return`<button class="vol" data-act="vol" data-b="${b.id}" style="--bw:${b.w}px;--bh:${b.h}px;--bd:${b.d}px;--fs:calc(${fs.toFixed(1)}px*var(--k));--c1:${b.c1};--c2:${b.c2};--ct:${b.ct};--lean:${b.lean||0}deg;--i:${i}" aria-label="Open the book: ${esc(b.t)}">
 <i class="fc vf-c l"></i><i class="fc vf-c r"></i><i class="fc vf-e"></i><i class="fc vf-t"></i><i class="fc vf-s"><span class="gb"><span class="em">${icon(b.ic)}</span></span><em>${esc(b.st||b.t)}</em><i class="n">WIND UP</i></i>${rib}<i class="glow"></i><i class="tip">${esc(b.tip)}</i></button>`}
 function shelfHTML(){const B=BOOKS();ui.books=B;
 return`<section class="section shelf-sec secw" id="shelf">${dd('÷','left:3%;top:6%;font-size:86px','w',.18)}${dd('×','right:4%;top:4%;font-size:90px','f',.24)}${dd('π','left:5%;bottom:10%;font-size:76px','b',.14)}${dd('∑','right:5%;bottom:12%;font-size:80px','w',.2)}
-<div class="container">${secHead('The shelf','Every feature is a <span class="hl">book.</span> Pull one out.','Twenty short volumes explain exactly what WIND UP does for students, teachers and administrators. Click a spine to open it, then turn the pages.')}
+<div class="container">${secHead('The shelf','Every feature is a <span class="hl">book.</span> Pull one out.','Twenty-three short volumes explain exactly what WIND UP does for students, teachers and administrators. Click a spine to open it, then turn the pages.')}
 <div class="shelves" id="shelves"><div class="case" id="case"><i class="cs back"></i><i class="cs sl"></i><i class="cs sr"></i><i class="cs top"></i><div class="plaque"><span>THE WIND UP LIBRARY</span></div>
 ${SHELVES.map(([t,sub,ids,pre,post],si)=>`<div class="sh"><div class="sh-h"><b>${t}</b><small>${sub}</small></div><div class="row3 rw" style="--d:${si*.1}s">${pre||''}${ids.map((id,i)=>volHTML(B.find(x=>x.id===id),i)).join('')}${post||''}</div><div class="board"></div></div>`).join('')}</div></div></div></section>`}
 function readerHTML(){return`<div class="rd" id="rd" aria-hidden="true"><div class="rd-bg" data-act="rd-close"></div><button class="rd-x" data-act="rd-close" aria-label="Close the book">${icon('x')}</button>
-<div class="rd-stage" id="rdstage"><div class="rd-book" id="rdbook" role="dialog" aria-modal="true" aria-label="Feature book"><i class="rd-cover"></i><div class="rd-pg l" id="rdL"></div><div class="rd-pg r" id="rdR"></div><div class="rd-bind"></div><div class="rd-leaf" id="rdLeaf"></div></div>
+<div class="rd-stage" id="rdstage"><div class="rd-book" id="rdbook" role="dialog" aria-modal="true" aria-label="Feature book"><i class="rd-cover"></i><div class="rd-door" id="rdDoor" aria-hidden="true"><div class="df"></div><div class="db"></div></div><div class="rd-pg l" id="rdL"></div><div class="rd-pg r" id="rdR"></div><div class="rd-bind"></div><div class="rd-leaf" id="rdLeaf"></div></div>
 <div class="rd-nav"><button data-act="rd-prev" aria-label="Previous page">${icon('chevL')}</button><span class="rd-dots" id="rdDots"></span><button data-act="rd-next" aria-label="Next page">${icon('chevR')}</button><span class="lbl" id="rdLbl"></span></div></div></div>`}
-let rdId=null,rdCur=0,rdBusy=0;
+let rdId=null,rdCur=0,rdBusy=0,rdT1=0,rdT2=0;
 const rdBook=()=>ui.books.find(x=>x.id===rdId);
 function rdDots(b,n){$('#rdDots').innerHTML=b.s.map((_,i)=>`<i class="${i===n?'on':''}" data-act="rd-dot" data-i="${i}"></i>`).join('');
 $('#rdLbl').textContent=`${b.t} · ${n+1} of ${b.s.length}`;
@@ -2086,9 +2328,15 @@ function rdOpen(id,el){const b=(ui.books||[]).find(x=>x.id===id);if(!b)return;rd
 const rd=$('#rd'),bk=$('#rdbook'),st=$('#rdstage');rdPaint(b,0);
 if(el){const r=el.getBoundingClientRect(),s=st.getBoundingClientRect(),tx=s.left+s.width/2,ty=s.top+bk.offsetTop+bk.offsetHeight/2;
 bk.style.setProperty('--sx',Math.round(r.left+r.width/2-tx)+'px');bk.style.setProperty('--sy',Math.round(r.top+r.height/2-ty)+'px');bk.style.setProperty('--ss',Math.max(.06,r.height/bk.offsetHeight).toFixed(3))}
-document.documentElement.classList.add('bk-lock');rd.setAttribute('aria-hidden','false');bk.classList.remove('fresh');void bk.offsetWidth;bk.classList.add('fresh');
-requestAnimationFrame(()=>rd.classList.add('on'));setTimeout(()=>bk.classList.remove('fresh'),1600)}
-function rdClose(){const rd=$('#rd');if(!rd)return;rd.classList.remove('on');rd.setAttribute('aria-hidden','true');document.documentElement.classList.remove('bk-lock');rdId=null}
+document.documentElement.classList.add('bk-lock');rd.setAttribute('aria-hidden','false');clearTimeout(rdT1);clearTimeout(rdT2);
+const cine=innerWidth>=900&&!PERF.motionOff();rd.classList.toggle('cinema',cine);rd.classList.remove('open','settled');
+$('#rdDoor .df').innerHTML=`<span class="dt">${esc(b.t)}</span><span class="ds">WIND UP · Volume</span>`;
+bk.classList.remove('fresh');void bk.offsetWidth;
+requestAnimationFrame(()=>{rd.classList.add('on');if(!cine){rd.classList.add('open');bk.classList.add('fresh');rdT2=setTimeout(()=>bk.classList.remove('fresh'),1600);return}
+rdT1=setTimeout(()=>{rd.classList.add('open');bk.classList.add('fresh');rdT2=setTimeout(()=>{rd.classList.add('settled');bk.classList.remove('fresh')},1500)},780)})}
+function rdClose(){const rd=$('#rd');if(!rd||!rd.classList.contains('on'))return;clearTimeout(rdT1);clearTimeout(rdT2);rdId=null;
+if(!rd.classList.contains('cinema')){rd.classList.remove('on','open');rd.setAttribute('aria-hidden','true');document.documentElement.classList.remove('bk-lock');return}
+rd.classList.remove('settled','open');rdT1=setTimeout(()=>{rd.classList.remove('on');rd.setAttribute('aria-hidden','true');document.documentElement.classList.remove('bk-lock')},900)}
 const RDN=8;
 function rdStrips(front,back,i=0){return`<div class="ls${i?' c':''}${i===RDN-1?' last':''}"><div class="sf"><div class="si" style="margin-left:calc(var(--W)*${(-i/RDN).toFixed(4)})">${front}</div></div><div class="sb"><div class="si" style="margin-left:calc(var(--W)*${(-(1-(i+1)/RDN)).toFixed(4)})">${back}</div></div>${i<RDN-1?rdStrips(front,back,i+1):''}</div>`}
 function rdStep(dir,dur){return new Promise(res=>{const b=rdBook(),L=$('#rdL'),R=$('#rdR'),lf=$('#rdLeaf'),bk=$('#rdbook'),cur=b.s[rdCur],nx=b.s[rdCur+dir],fwd=dir>0;
@@ -2110,7 +2358,7 @@ labActions['rd-dot']=(el)=>rdGo(+el.dataset.i);
 labActions['scroll-how']=(el,e)=>{e.preventDefault();if($('#rd'))rdOpen('how',$('[data-b=how]'));else go('#/')};
 labActions['open-vol']=(el,e)=>{e.preventDefault();rdOpen(el.dataset.b,$(`[data-b="${el.dataset.b}"]`))};
 /* ---------- "Begin the learning": guided zoom tour ---------- */
-const BOOKTXT={daily:'One new question every day, the same for everyone. Build a streak for bonus XP.',paper:'A timed exam simulator. Write answers, then mark yourself and get a grade estimate.',rooms:'Create a room, share the code and focus on one shared timer.',streaks:'A six month heat-map that lights up on every day you earn XP.',shop:'Spend the XP you earn on themes, highlighter colours and avatar rings.',a11y:'Text size, easy-read font, high contrast, roomier lines and reduced motion.',about:'Start here. This book explains what WIND UP is and who it is for.',how:'How it works in a few short steps, from signing up to your first download.',subjects:'Browse all ten subjects and every year group from one place.',students:'Everything students get: exam countdowns, bookmarks, ratings and progress tracking.',teachers:'Teachers upload papers, get verified and see downloads and ratings.',admins:'How administrators approve uploads, verify teachers and review reports.',lab:'The Study Lab: chess where a capture means answering a question, plus a focus timer and flashcards.',snl:'Snakes & Ladders against a bot. One game a day, and a quiz can shield you from snakes.',formulas:'A searchable formula sheet for Maths, Science and Computing. Star and copy what you need.',planner:'A seven day planner. Add revision tasks, tick them off and earn XP.',badges:'Sixteen badges that unlock as you study, keep streaks and win games.',faq:'Quick answers to common questions about uploads, verification and previews.',demo:'What is stored in your browser today and what a real backend adds.',start:'The last page: create your free account and begin.'};
+const BOOKTXT={grade:'Add marks with weights to see your average, letter grade and what you need next.',read:'Paste notes and hear them read aloud with the current sentence highlighted.',mood:'A ten second mood and energy check-in that suggests the right kind of session.',daily:'One new question every day, the same for everyone. Build a streak for bonus XP.',paper:'A timed exam simulator. Write answers, then mark yourself and get a grade estimate.',rooms:'Create a room, share the code and focus on one shared timer.',streaks:'A six month heat-map that lights up on every day you earn XP.',shop:'Spend the XP you earn on themes, highlighter colours and avatar rings.',a11y:'Text size, easy-read font, high contrast, roomier lines and reduced motion.',about:'Start here. This book explains what WIND UP is and who it is for.',how:'How it works in a few short steps, from signing up to your first download.',subjects:'Browse all ten subjects and every year group from one place.',students:'Everything students get: exam countdowns, bookmarks, ratings and progress tracking.',teachers:'Teachers upload papers, get verified and see downloads and ratings.',admins:'How administrators approve uploads, verify teachers and review reports.',lab:'The Study Lab: chess where a capture means answering a question, plus a focus timer and flashcards.',snl:'Snakes & Ladders against a bot. One game a day, and a quiz can shield you from snakes.',formulas:'A searchable formula sheet for Maths, Science and Computing. Star and copy what you need.',planner:'A seven day planner. Add revision tasks, tick them off and earn XP.',badges:'Sixteen badges that unlock as you study, keep streaks and win games.',faq:'Quick answers to common questions about uploads, verification and previews.',demo:'What is stored in your browser today and what a real backend adds.',start:'The last page: create your free account and begin.'};
 function tourSteps(){const u=me(),S1=[];
 const add=(sel,title,text,o={})=>S1.push({sel,title,text,route:'#/',...o});
 add('.pub-head .logo','WIND UP home','This is the logo. Click it any time to come back to this welcome page and the bookshelf.');
@@ -2130,16 +2378,16 @@ add('.marq','Subjects ribbon','A scrolling ribbon of every subject on the platfo
 add('.marq.fm','Formula ribbon','Formulas drift past as you scroll. A taste of the Formula Sheet inside the Study Lab.');
 add('#new .sec-title','Fresh on the shelf','The four newest study tools, each with its own book below.');
 for(const[id,t,d]of[['daily','Daily Challenge','One question a day, the same for everyone. Keep a streak for bonus XP.'],['paper','Past Paper Mode','Sit a timed paper, then mark yourself and see a grade estimate.'],['rooms','Study Rooms','Share a code and focus together on one clock.'],['streaks','Streak Calendar','A heat-map of every day you studied.'],['shop','Rewards Shop','Spend XP on themes, highlighters and avatar rings.'],['a11y','Accessibility','Text size, easy-read font, high contrast and reduced motion.']])add(`.tile[data-b="${id}"]`,t,d);
-add('.statband','At a glance','Twenty books, ten subjects, twenty-two badges and over thirty formulas, counted up as you scroll.');
+add('.statband','At a glance','Twenty-three books, ten subjects, twenty-five badges and over thirty formulas, counted up as you scroll.');
 add('.newsband','News and updates','The latest version and a link to the full version history from 1.1 to 1.5.');
 add('.daytl','A day with WIND UP','A simple story of how a student might use the site from morning to bedtime.');
 add('#case','The bookshelf','Every feature is a book. Click any spine to open it, then turn the pages with the arrows or your keyboard. Next I will zoom in on each book.',{big:1});
-for(const id of['about','how','subjects','students','teachers','admins','lab','snl','daily','paper','formulas','planner','rooms','streaks','badges','shop','a11y','faq','demo','start']){const b=BOOKS().find(x=>x.id===id);if(b)add(`.vol[data-b="${id}"]`,b.t,BOOKTXT[id],{book:1})}
+for(const id of['about','how','subjects','students','teachers','admins','lab','snl','daily','paper','formulas','planner','grade','read','mood','rooms','streaks','badges','shop','a11y','faq','demo','start']){const b=BOOKS().find(x=>x.id===id);if(b)add(`.vol[data-b="${id}"]`,b.t,BOOKTXT[id],{book:1})}
 add('.band','Ready to prepare?','Create a free account here, or browse first. That is the whole tour of the welcome page.');
 if(u){const L=(sel,title,text,o={})=>S1.push({sel,title,text,route:'#/lab',...o});
 S1.push({sel:'.side .nav',title:'Your menu',text:'Your dashboard menu. Everything you can do as a '+u.role+' lives here.',route:'#/overview'});
 L('.lab-top','Your stats','XP, level, streak and your record for each game. Everything you do in the Lab feeds these.');
-for(const[k,t,d]of[['chess','Brain Chess','Play chess against the computer. When you capture a piece, answer a question to make the move stick.'],['snl','Snakes & Ladders','Your one daily game. After you play, it locks until midnight.'],['daily','Daily Challenge','One question a day. Keep your streak going for bonus XP.'],['paper','Past Paper','Sit a timed exam, then mark yourself.'],['focus','Focus Timer','Pomodoro style sessions with breaks. Finish one to earn XP.'],['rooms','Study Rooms','Create a room and focus on a shared timer with friends.'],['cards','Flashcards','Build decks and review them with spaced repetition.'],['formulas','Formulas','Search and star formulas for every subject.'],['planner','Planner','Plan the week and tick tasks off for XP.'],['streaks','Streaks','A heat-map of every day you studied.'],['shop','Shop','Spend XP on themes, highlighters and avatar rings.'],['badges','Badges','Your medal case. Locked badges stay grey until you earn them.']])L(`.lab-tabs [data-t="${k}"]`,t,d,{pre:()=>{ui.labTab=k}});
+for(const[k,t,d]of[['chess','Brain Chess','Play chess against the computer. When you capture a piece, answer a question to make the move stick.'],['snl','Snakes & Ladders','Your one daily game. After you play, it locks until midnight.'],['daily','Daily Challenge','One question a day. Keep your streak going for bonus XP.'],['paper','Past Paper','Sit a timed exam, then mark yourself.'],['focus','Focus Timer','Pomodoro style sessions with breaks. Finish one to earn XP.'],['rooms','Study Rooms','Create a room and focus on a shared timer with friends.'],['cards','Flashcards','Build decks and review them with spaced repetition.'],['formulas','Formulas','Search and star formulas for every subject.'],['planner','Planner','Plan the week and tick tasks off for XP.'],['grades','Grades','Add marks with weights to see your average, letter grade and what you need next.'],['read','Read Aloud','Paste notes and hear them read aloud, one highlighted sentence at a time.'],['mood','Mood','A ten second mood and energy check-in that suggests the right session.'],['streaks','Streaks','A heat-map of every day you studied.'],['shop','Shop','Spend XP on themes, highlighters and avatar rings.'],['badges','Badges','Your medal case. Locked badges stay grey until you earn them.']])L(`.lab-tabs [data-t="${k}"]`,t,d,{pre:()=>{ui.labTab=k}});
 }
 return S1}
 const Tour={i:0,steps:[],on:false,
@@ -2347,6 +2595,11 @@ Object.assign(actions,labActions);Object.assign(forms,labForms);Object.assign(ch
 window.addEventListener('hashchange',route);
 S.users=S.users.filter(u=>u.authId||u.email!=='admin@demo.windup');if(S.session&&!S.users.some(u=>u.id===S.session))S.session=null;
 {const cu=me();if(cu&&cu.authId&&!Auth.signedIn()){S.session=null;persist()}}
+/* accessibility: give every control an accessible name, keep dialogs labelled */
+let axN=0;function axLabelAll(){document.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(c=>{if(c.getAttribute('aria-label')||c.getAttribute('aria-labelledby')||c.closest('label'))return;if(c.id&&document.querySelector('label[for="'+c.id+'"]'))return;
+let l=c.closest('.field,.col,div')&&c.closest('.field,.col,div').querySelector(':scope > label, :scope > .lbl, :scope > span.sm');let t=l&&l.textContent.trim();
+if(!t&&c.placeholder)t=c.placeholder;if(!t&&c.tagName==='SELECT'){const o=c.options[0];t=o?o.textContent.trim():''}if(!t)t=(c.name||c.dataset.f||c.type||'Field').replace(/[-_]/g,' ');c.setAttribute('aria-label',t)})}
+{let q=0;new MutationObserver(()=>{if(q)return;q=requestAnimationFrame(()=>{q=0;axLabelAll()})}).observe(document.body,{childList:true,subtree:true});axLabelAll()}
 route();
 </script>
 </body>
