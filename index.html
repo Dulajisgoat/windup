@@ -957,43 +957,6 @@ html.a11y-cursor a,html.a11y-cursor button,html.a11y-cursor [data-act],html.a11y
 html[data-tint]::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:8999;mix-blend-mode:multiply}
 html[data-tint=cream]::after{background:#fff0c4}html[data-tint=blue]::after{background:#cfe3ff}html[data-tint=green]::after{background:#d4f2dc}html[data-tint=rose]::after{background:#ffd9e4}
 html[data-theme=dark][data-tint]::after{mix-blend-mode:soft-light;opacity:.55}
-
-/* ---------- auth overlay (book page) ---------- */
-.ao{position:fixed;left:24px;right:9px;top:0;bottom:0;z-index:460;display:none;overflow-y:auto;overscroll-behavior:contain;background:radial-gradient(900px 460px at 88% -8%,var(--yellow-soft,#fff2bf),transparent 62%),var(--bg);border-left:1px solid var(--line);box-shadow:inset 40px 0 40px -30px rgba(120,80,0,.22),0 0 60px rgba(60,40,0,.25)}
-.ao.on{display:block;animation:aoIn .28s cubic-bezier(.2,.7,.2,1) both}
-@keyframes aoIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
-.ao-in{min-height:100%;display:flex;flex-direction:column;padding:22px clamp(16px,4vw,48px) 32px}
-.ao-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.ao-top .logo{padding:0}
-.ao-back{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 10px;border-radius:9px;color:var(--ink-2);font-weight:500}
-.ao-back:hover{color:var(--ink);background:var(--hover)}
-.ao-wrap{flex:1;display:grid;place-items:center;padding:20px 0}
-.ao-card{width:100%;max-width:480px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:28px}
-.ao-card.wide{max-width:540px}
-.ao-card h1{font-size:26px;letter-spacing:-.03em;margin:16px 0 4px}
-.ao-tabs{display:flex;width:100%}.ao-tabs button{flex:1;padding:8px 12px;border-radius:7px;font-size:13px;font-weight:600;color:var(--ink-2)}
-.ao-tabs button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm)}
-.ao-note{margin:14px 0 0;padding:9px 12px;border-radius:10px;background:var(--info-bg);color:var(--info);font-size:12.5px;font-weight:500}
-.ao form{margin-top:18px}
-.ao .input,.ao .select{height:44px;border-radius:12px}
-.ao .btn.primary.lg{background:var(--yellow);border-color:var(--yellow);color:#2b2410;font-weight:600;box-shadow:none}.ao .btn.primary.lg:hover{background:var(--yellow-2)}
-.ao-pw{position:relative}.ao-pw .input{padding-right:44px}
-.ao-eye{position:absolute;right:4px;top:4px;width:36px;height:36px;display:grid;place-items:center;border-radius:9px;color:var(--ink-3)}
-.ao-eye:hover{background:var(--hover);color:var(--ink)}.ao-eye[aria-pressed=true]{color:var(--ink)}
-.ao .form-grid{grid-template-columns:1fr 1fr}
-.ao .seg{display:flex}.ao .seg button{flex:1;text-transform:capitalize}.ao .seg button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-sm)}
-.ao-demo{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line-2)}
-.ao-demo h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:600;margin-bottom:10px}
-.ao-demo .chips button{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0;padding:7px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);text-align:left;transition:.15s}
-.ao-demo .chips button:hover{border-color:var(--line-2);background:var(--hover);transform:translateY(-1px)}
-.ao-demo b{font-size:12.5px;font-weight:600}.ao-demo small{font-size:11.5px;color:var(--ink-3)}
-.ao .err{margin:-4px 0 10px;min-height:0}.ao .err:empty{display:none}
-.ao-sw{margin-top:14px;font-size:13px;color:var(--ink-2);text-align:center}.ao-sw button{text-decoration:underline;font-weight:600;color:var(--ink)}
-html.auth-open{overflow:hidden}html.auth-open #toasts{z-index:470}
-@media(max-width:700px){.ao{left:0;right:0;border-left:0}.ao-card{padding:22px 18px;border-radius:16px}}
-@media(max-width:520px){.ao .form-grid{grid-template-columns:1fr}.ao-in{padding:16px 14px 24px}}
-@media(prefers-reduced-motion:reduce){.ao.on{animation:none}}
-html.perf-low .ao.on{animation:none}
 /* skip link */
 .skip-link{position:fixed;left:12px;top:-60px;z-index:10000;background:#fff;color:#000;padding:10px 16px;border-radius:10px;border:2px solid #000;font-weight:700;transition:top .2s}.skip-link:focus{top:12px}
 </style>
@@ -1105,10 +1068,10 @@ const openRequests=()=>S.requests.filter(q=>q.status==='open');
 function weekKey(d=new Date()){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));t.setUTCDate(t.getUTCDate()+4-(t.getUTCDay()||7));const y=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+'-W'+Math.ceil(((t-y)/864e5+1)/7)}
 function getSpotlight(){const k=weekKey();if(S.spotlight&&S.spotlight.week===k){const r=getRes(S.spotlight.resId);if(r&&r.status==='published')return r}const pool=visible().filter(r=>ratingOf(r.id).avg>=4.3);const l=pool.length?pool:visible();return l.length?l[parseInt(k.split('W')[1])%l.length]:null}
 
-/* ---------- Auth: local demo accounts (email + password) ----------
-   Accounts live in this browser only: localStorage "windup.users" (salted SHA-256 hashes, never plain text)
-   and "windup.session" (the signed-in email). This is a demo layer, not real security. The Auth API below
-   (signUp / signIn / signOut / signedIn / restore) is the seam to swap for Supabase Auth later. */
+/* ---------- Auth: local username/password store ----------
+   Accounts are kept only in this browser: localStorage "windup_users" holds each account's username and a
+   salted SHA-256 password hash (never the plain password); "windup_auth" marks who is currently signed in
+   (same shape as before). This is a demo security layer, not a real one. */
 function sha256js(str){const b=unescape(encodeURIComponent(str)),K=[],H=[];let n=2,c=0;
 while(c<64){let p=1;for(let i=2;i*i<=n;i++)if(n%i===0){p=0;break}if(p){if(c<8)H[c]=(Math.pow(n,.5)%1)*4294967296|0;K[c]=(Math.pow(n,1/3)%1)*4294967296|0;c++}n++}
 const w=[],l=b.length*8;let t=b+'\x80';while(t.length%64-56)t+='\0';for(let i=0;i<t.length;i++)w[i>>2]|=t.charCodeAt(i)<<(24-(i%4)*8);
@@ -1119,42 +1082,30 @@ const t2=(R(a,2)^R(a,13)^R(a,22))+((a&H[1])^(a&H[2])^(H[1]&H[2]));H.unshift((t1+
 for(let i=0;i<8;i++)H[i]=(H[i]+o[i])|0}
 return H.map(x=>('00000000'+(x>>>0).toString(16)).slice(-8)).join('')}
 const Auth={
-KU:'windup.users',KS:'windup.session',
-DEMO_PW:'demo1234',
-DEMOS:[{key:'student',name:'Demo Student',email:'student@windup.demo',role:'student',school:'Northfield Academy'},
-{key:'teacher',name:'Demo Teacher',email:'teacher@windup.demo',role:'teacher',school:'Northfield Academy',verified:true},
-{key:'admin',name:'Demo Admin',email:'admin@windup.demo',role:'admin',school:'WIND UP'}],
 user:me,
+KU:'windup_users',
+ADMIN_USERNAMES:[],
+norm:u=>String(u||'').trim(),
 users(){try{const a=JSON.parse(store.getItem(this.KU));return Array.isArray(a)?a:[]}catch(e){return[]}},
-save(a){try{store.setItem(this.KU,JSON.stringify(a));return true}catch(e){return false}},
-norm:e=>String(e||'').trim().toLowerCase(),
-validEmail:e=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e),
-async hash(pw,salt){const m=salt+':'+pw;try{if(window.crypto&&crypto.subtle){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(m));return[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}}catch(e){}return sha256js(m)},
+saveUsers(a){try{store.setItem(this.KU,JSON.stringify(a));return true}catch(e){return false}},
 salt(){try{return[...crypto.getRandomValues(new Uint8Array(12))].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return Math.random().toString(16).slice(2)+Date.now().toString(16)}},
-async seed(){const a=this.users();let ch=false;for(const d of this.DEMOS){if(a.some(x=>x.email===d.email))continue;const salt='demo-'+d.key;a.push({id:uid('a_'),name:d.name,email:d.email,role:d.role,school:d.school,verified:!!d.verified,demo:true,salt,hash:await this.hash(this.DEMO_PW,salt),created:new Date().toISOString()});ch=true}if(ch)this.save(a)},
-bind(rec){let u=S.users.find(x=>x.authId===rec.email);const fresh=!u;
-if(!u){u={id:uid('u_'),authId:rec.email,username:rec.email.split('@')[0],role:rec.role,name:rec.name,email:rec.email,status:'active',verified:!!rec.verified,joined:new Date().toISOString(),subjects:[],bio:'',year:'Year 11',board:'AQA',school:rec.school||''};S.users.push(u)}
+async hash(pw,salt){const m=salt+':'+pw;try{if(window.crypto&&crypto.subtle){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(m));return[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}}catch(e){}return sha256js(m)},
+async local(username,password){username=this.norm(username);if(!username||!password)return{error:'Please enter username and password'};
+const a=this.users();let rec=a.find(x=>x.username===username);
+if(!rec){const salt=this.salt();rec={username,salt,hash:await this.hash(password,salt)};a.push(rec);if(!this.saveUsers(a))return{error:'Browser storage is full or blocked, so the account could not be saved.'};return{data:{username,created:true}}}
+const h=await this.hash(password,rec.salt);if(h!==rec.hash)return{error:'Incorrect username or password.'};
+return{data:{username,created:false}}},
+bind(d,profile){try{localStorage.setItem('windup_auth',JSON.stringify({username:d.username}))}catch(e){}
+let u=S.users.find(x=>x.authId===d.username);
+if(!u){u={id:uid('u_'),authId:d.username,username:d.username,role:'student',name:d.username,email:d.username,status:'active',verified:false,joined:new Date().toISOString(),subjects:[],bio:'',year:'Year 11',board:'AQA',school:''};S.users.push(u)}
+const fresh=!!profile&&d.created;if(fresh)Object.assign(u,profile,{authId:d.username,username:d.username});
+if(this.ADMIN_USERNAMES.map(x=>x.toLowerCase()).includes(String(d.username).toLowerCase()))u.role='admin';
 if(u.status==='suspended')return{error:'This account is unavailable.'};
-if(rec.verified)u.verified=true;
-if(fresh&&u.role==='teacher'&&!u.verified&&!S.verifications.some(v=>v.teacherId===u.id))S.verifications.push({id:uid('v'),teacherId:u.id,school:u.school||'',evidence:'',note:'Submitted at sign-up.',status:'pending',date:new Date().toISOString()});
-S.session=u.id;ensureUD();persist();try{store.setItem(this.KS,JSON.stringify({email:rec.email,at:Date.now()}))}catch(e){}return{user:u,fresh}},
-async signIn(email,password){email=this.norm(email);if(!this.validEmail(email))return{error:'Enter a valid email address.',field:'email'};if(!password)return{error:'Enter your password.',field:'password'};
-try{await this.ready}catch(e){}const rec=this.users().find(x=>x.email===email);
-if(!rec||(await this.hash(password,rec.salt))!==rec.hash)return{error:'Incorrect email or password.'};
-try{await BACKEND.ready}catch(e){}return this.bind(rec)},
-async signUp({name,email,password,confirm,role,school}){name=String(name||'').trim().replace(/\s+/g,' ');email=this.norm(email);school=String(school||'').trim();
-if(name.length<2)return{error:'Enter your full name.',field:'name'};if(!this.validEmail(email))return{error:'Enter a valid email address.',field:'email'};
-if(role!=='student'&&role!=='teacher')return{error:'Choose student or teacher.'};if(role==='teacher'&&school.length<2)return{error:'Teachers need to enter their school.',field:'school'};
-if(String(password||'').length<8)return{error:'Password must be at least 8 characters.',field:'password'};if(password!==confirm)return{error:'Passwords do not match.',field:'confirm'};
-try{await this.ready}catch(e){}const a=this.users();if(a.some(x=>x.email===email))return{error:'An account with this email already exists. Try signing in.',field:'email',exists:true};
-const salt=this.salt(),rec={id:uid('a_'),name,email,role,school,verified:false,salt,hash:await this.hash(password,salt),created:new Date().toISOString()};a.push(rec);
-if(!this.save(a))return{error:'Browser storage is full or blocked, so the account could not be saved.'};
-try{await BACKEND.ready}catch(e){}const r=this.bind(rec);if(r.error)return r;return{...r,created:true}},
-sessionEmail(){try{const x=JSON.parse(store.getItem(this.KS));return x&&x.email?this.norm(x.email):''}catch(e){return''}},
-signedIn(){const e=this.sessionEmail();return!!e&&this.users().some(x=>x.email===e)},
-restore(){const e=this.sessionEmail(),rec=e&&this.users().find(x=>x.email===e);if(!rec)return false;if(me()&&me().authId===e)return true;return!this.bind(rec).error},
-signOut(){try{store.removeItem(this.KS)}catch(e){}S.session=null;persist()}};
-Auth.ready=Auth.seed().catch(e=>console.warn('[WIND UP] demo seed failed',e));
+if(fresh&&u.role==='teacher'&&!S.verifications.some(v=>v.teacherId===u.id))S.verifications.push({id:uid('v'),teacherId:u.id,school:u.school||'',evidence:'',note:'Submitted at sign-up.',status:'pending',date:new Date().toISOString()});
+S.session=u.id;ensureUD();persist();return{user:u,created:!!d.created}},
+async login(username,password,profile){const r=await this.local(username,password);if(r.error)return r;try{await BACKEND.ready}catch(e){}return this.bind(r.data,profile)},
+signedIn(){try{return!!(JSON.parse(localStorage.getItem('windup_auth'))||{}).username}catch(e){return false}},
+signOut(){try{localStorage.removeItem('windup_auth')}catch(e){}S.session=null;persist()}};
 
 /* ---------- theme (light / dark), stored in this browser only ---------- */
 const THEME={get(){try{return localStorage.getItem('windup_theme')||'light'}catch(e){return'light'}},set(v){try{localStorage.setItem('windup_theme',v)}catch(e){}document.documentElement.dataset.theme=v;document.querySelectorAll('.theme-btn:not(.a11y-btn)').forEach(b=>b.innerHTML=icon(v==='dark'?'sun':'moon'))}};
@@ -1254,7 +1205,7 @@ function toast(msg,type=''){const t=document.createElement('div');t.className='t
 function openModal({title,body,footer='',size='',onOpen,lock}){const was=$('.overlay')?ui.mPrev:document.activeElement;closeModal(true);ui.mPrev=was;const o=document.createElement('div');o.className='overlay';if(lock)o.dataset.lock='1';o.innerHTML=`<div class="modal ${size}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="mh"><h3>${esc(title)}</h3>${lock?'':`<button class="icon-btn" data-act="close-modal" aria-label="Close">${icon('x')}</button>`}</div><div class="mb">${body}</div>${footer?`<div class="mf">${footer}</div>`:''}</div>`;$('#overlay-root').appendChild(o);const f=$('input,select,textarea',o)||$('.mb button,.mb a[href],.mh button',o);f&&setTimeout(()=>f.focus(),30);o.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const l=[...o.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])')].filter(x=>!x.disabled&&x.offsetParent!==null);if(!l.length)return;const i=l.indexOf(document.activeElement);if(i<0||(e.shiftKey&&i===0)){e.preventDefault();l[l.length-1].focus()}else if(!e.shiftKey&&i===l.length-1){e.preventDefault();l[0].focus()}});onOpen&&onOpen(o)}
 function closeModal(silent){if(silent!==true&&$('.overlay[data-lock]'))return;$('#overlay-root').innerHTML='';if(silent!==true){const pv=ui.mPrev;ui.mPrev=null;if(pv&&pv.focus&&document.contains(pv))try{pv.focus()}catch(e){}}if(ui.confirm&&!silent){const r=ui.confirm;ui.confirm=null;r(false)}}
 function confirmBox({title,message,ok='Confirm',danger=false}){return new Promise(res=>{openModal({title,body:`<p class="muted">${esc(message)}</p>`,footer:`<button class="btn" data-act="close-modal">Cancel</button><button class="btn primary ${danger?'danger':''}" data-act="confirm-yes">${esc(ok)}</button>`});ui.confirm=res})}
-function requireAuth(msg='Sign in to continue'){if(me())return true;ui.next=location.hash||'#/';ui.aoMsg=msg;go('#/login');return false}
+function requireAuth(msg='Sign in to continue'){if(me())return true;openModal({title:msg,body:`<p class="muted">Create a free account or sign in to save, download and track resources.</p>`,footer:`<a class="btn" href="#/login" data-act="close-modal">Sign in</a><a class="btn primary" href="#/signup" data-act="close-modal">Create account</a>`});return false}
 
 /* ---------- components ---------- */
 const avatarFrame=u=>{try{const m=me();return m&&u&&u.id===m.id?((LAB().shop||{}).frame||''):''}catch(e){return''}};
@@ -1284,7 +1235,7 @@ return`<div class="card spot"><div class="eyebrow">${icon('sparkle')} Weekly Spo
 <div class="row wrap sm muted" style="margin:12px 0">${teacherName(teacher(r.teacherId))}${rt.n?`<span>·</span>${starsRow(rt.avg)} ${rt.avg.toFixed(1)}`:''}</div><div class="row"><button class="btn sm primary" data-act="preview" data-id="${r.id}">${icon('eye')}Preview</button><a class="btn sm" href="#/resource/${r.id}">View details</a></div></div>`}
 
 /* ---------- shells ---------- */
-const banner=()=>ui.hideBanner?'':`<div class="demo-banner">Demo build: your data lives only in this browser (localStorage). Accounts and passwords are stored only in this browser, and roles and permissions are not enforced by a server. <a href="#/settings-info">What needs a backend?</a><button data-act="hide-banner" aria-label="Dismiss">${icon('x')}</button></div>`;
+const banner=()=>ui.hideBanner?'':`<div class="demo-banner">Demo build: your data lives only in this browser (localStorage). Passwords are checked by the Enkryption sign-in service, but roles and permissions are not enforced by a server. <a href="#/settings-info">What needs a backend?</a><button data-act="hide-banner" aria-label="Dismiss">${icon('x')}</button></div>`;
 function publicShell(c,active){const u=me();return`${banner()}<header class="pub-head"><div class="container"><a class="logo" href="#/">${LOGO}WIND UP</a>
 <nav class="pub-nav"><a href="#/discover">Browse</a><a href="#/subjects">Subjects</a><a href="#/" data-act="scroll-how">How it works</a><a href="#/news">News</a></nav><div class="right row">${themeBtn()}${u?`<a class="btn primary" href="#/overview">Dashboard</a>`:`<a class="btn ghost" href="#/login">Log in</a><a class="btn primary" href="#/signup">Sign up</a>`}</div></div></header><main>${c}</main>
 <footer class="foot"><div class="container"><div class="cols"><div><a class="logo" href="#/" style="padding:0">${LOGO}WIND UP</a><p class="muted sm" style="margin-top:10px;max-width:280px">Revision papers, past papers and study materials shared by teachers.</p></div>
@@ -1302,7 +1253,7 @@ const main=[['overview','Overview','home','#/overview'],['discover','Discover','
 const out=[['Study',main]];if(u.role==='teacher')out.push(['Teaching',[['upload','Upload','upload','#/upload'],['uploads','My Uploads','files','#/uploads']]]);out.push(['Account',[['profile','Profile','user','#/profile'],['settings','Settings','settings','#/settings']]]);return out}
 function appShell(c,active){const u=me();
 const nav=navItems(u).map(([l,items])=>`<div class="nav-label">${l}</div>`+items.map(([k,t,ic,h,n])=>`<a href="${h}" class="${active===k?'active':''}" ${k==='discover'?'data-reset="1"':''}>${icon(ic)}${t}${n?`<span class="cnt">${n}</span>`:''}</a>`).join('')).join('');
-return`${banner()}<div class="shell" id="appShell"><aside class="side" id="side"><a class="logo" href="#/">${LOGO}WIND UP</a><nav class="nav">${nav}</nav>
+return`${banner()}<div class="shell"><aside class="side" id="side"><a class="logo" href="#/">${LOGO}WIND UP</a><nav class="nav">${nav}</nav>
 <div class="side-foot">${avatar(u,34)}<div class="who"><b>${esc(u.name)}${u.verified?vbadge():''}</b><span class="faint sm" style="text-transform:capitalize">${u.role}</span></div><button class="icon-btn" data-act="signout" aria-label="Sign out" title="Sign out">${icon('logout')}</button></div></aside><div class="scrim" id="scrim" data-act="toggle-side"></div>
 <div class="main"><div class="topbar"><button class="icon-btn menu-btn" data-act="toggle-side" aria-label="Menu">${icon('menu')}</button>
 <form class="searchbox" data-form="global-search" role="search">${icon('search')}<input id="gsearch" name="q" placeholder="Search all resources  ( / )" autocomplete="off" aria-label="Search resources"></form>
@@ -1310,8 +1261,24 @@ return`${banner()}<div class="shell" id="appShell"><aside class="side" id="side"
 <main class="content">${c}</main></div></div>`}
 
 /* ---------- views: public ---------- */
+function viewLogin(){return{shell:'auth',title:'Log in',html:`<div class="card auth-card"><h1>Welcome back</h1><p class="muted">Log in to your WIND UP account.</p>
+<div class="demo-note"><b>Sign-in:</b> your username and password are checked by the Enkryption service. Your profile and uploads are still saved only in this browser (demo storage).</div>
+<form data-form="login"><div class="field"><label for="le">Username</label><input class="input" id="le" name="username" required autocomplete="username" placeholder="your username"></div>
+<div class="field"><label for="lp">Password</label><input class="input" id="lp" name="password" type="password" required autocomplete="current-password" placeholder="your password"></div><div class="err" id="lerr"></div>
+<button class="btn primary block" type="submit">Log in</button></form>
+<p class="sm muted" style="margin-top:14px;display:flex;justify-content:space-between"><span class="faint">New username? One is created for you.</span><span>New here? <a href="#/signup" style="text-decoration:underline">Create an account</a></span></p>
+<p class="powered">Powered by <b>Enkryption</b></p></div>`}}
+function viewSignup(q){const role=q.get('role')==='teacher'?'teacher':'student';
+return{shell:'auth',title:'Create account',html:`<div class="card auth-card" style="max-width:520px"><h1>Create your account</h1><p class="muted">Free for students and teachers.</p>
+<div class="demo-note"><b>Sign-in:</b> your username and password are sent to the Enkryption service to create your login. They are never stored in this page. Your profile is saved only in this browser (demo storage).</div>
+<form data-form="signup" id="signupform" class="${role}"><div class="field"><label>I am a</label><div class="seg" id="roleseg">${['student','teacher'].map(r=>`<label class="${r===role?'on':''}" style="text-transform:capitalize"><input type="radio" name="role" value="${r}" ${r===role?'checked':''} hidden data-change="signup-role">${r}</label>`).join('')}</div></div>
+<div class="form-grid"><div class="field"><label>Full name</label><input class="input" name="name" required placeholder="${role==='teacher'?'Ms Jane Smith':'Jane Smith'}"></div><div class="field"><label>Username</label><input class="input" name="username" required minlength="3" maxlength="32" pattern="[A-Za-z0-9_.]+" autocomplete="username" placeholder="letters and numbers"></div></div><div class="form-grid"><div class="field"><label>Password</label><input class="input" name="password" type="password" required minlength="6" autocomplete="new-password" placeholder="at least 6 characters"></div><div class="field"><label>Email <span class="faint">(optional)</span></label><input class="input" name="email" type="email"></div></div>
+<div id="su-student" ${role==='teacher'?'hidden':''}><div class="form-grid"><div class="field"><label>Year group</label><select class="select" name="year">${optionList(YEARS,'Year 11')}</select></div><div class="field"><label>Exam board</label><select class="select" name="board">${optionList(BOARDS,'AQA')}</select></div></div></div>
+<div id="su-teacher" ${role==='student'?'hidden':''}><div class="field"><label>School or institution</label><input class="input" name="school" placeholder="Northfield Academy"></div><p class="hint" style="margin:-6px 0 12px">Teachers start unverified. An administrator reviews your request; unverified uploads are reviewed before they appear.</p></div>
+<div class="field"><label id="su-sl">Subjects you study</label>${chipChecks(S.subjects,'subjects')}</div><div class="err" id="serr"></div><button class="btn primary block" type="submit">Create account</button></form>
+<p class="sm muted" style="margin-top:14px">Already have an account? <a href="#/login" style="text-decoration:underline">Log in</a></p><p class="powered">Powered by <b>Enkryption</b></p></div>`}}
 
-function backendTable(){const rows=[['Authentication & sessions','Email and password hashed in this browser (demo only); profile and role kept in the browser','Supabase Auth (email/password, magic links)'],['Role permissions','Checked in the browser only','Row Level Security policies and a profiles.role column'],['PDF storage','Data URL in localStorage under ~1.5 MB; larger files for this session only','Supabase Storage bucket, signed URLs, size and type limits'],['Search & filters','Client-side over local data','Postgres full-text search with indexed filters'],['Downloads, ratings, bookmarks','Counted per browser','Shared tables; download counts via an RPC or edge function'],['Password reset & notifications','Simulated','Auth emails and transactional email provider'],['Teacher verification & moderation','Admin actions change local data','Admin-only policies with an audit log'],['Virus scanning, rate limiting','Not available','Edge functions or a scanning service']];
+function backendTable(){const rows=[['Authentication & sessions','Enkryption username and password; profile and role kept in the browser','Supabase Auth (email/password, magic links)'],['Role permissions','Checked in the browser only','Row Level Security policies and a profiles.role column'],['PDF storage','Data URL in localStorage under ~1.5 MB; larger files for this session only','Supabase Storage bucket, signed URLs, size and type limits'],['Search & filters','Client-side over local data','Postgres full-text search with indexed filters'],['Downloads, ratings, bookmarks','Counted per browser','Shared tables; download counts via an RPC or edge function'],['Password reset & notifications','Simulated','Auth emails and transactional email provider'],['Teacher verification & moderation','Admin actions change local data','Admin-only policies with an audit log'],['Virus scanning, rate limiting','Not available','Edge functions or a scanning service']];
 return`<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Feature</th><th>In this demo</th><th>Needs a real backend</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b style="font-weight:500">${r[0]}</b></td><td class="muted">${r[1]}</td><td class="muted">${r[2]}</td></tr>`).join('')}</tbody></table></div>
 <p class="sm muted" style="margin:14px 0 8px">Integration points in the code: <code>Auth</code> (sign-in), <code>API</code> (mutations), <code>makePdfBlob/blobUrl</code> (files) and <code>CONFIG.SUPABASE_URL / SUPABASE_ANON_KEY</code>.</p>`}
 const PAGES={
@@ -2418,7 +2385,7 @@ add('.pub-nav [data-act="scroll-how"]','How it works','Scrolls to the short stor
 add('.pub-head .theme-btn:not(.a11y-btn)','Dark mode','Switch between the cream theme and the dark theme. The yellow highlighter turns blue at night.');
 add('.pub-head .perf-sw','Device mode','Choose the phone for low-end devices (lighter effects, saves battery) or the laptop for high-end devices (all animations and 3D).');
 add('.pub-head .a11y-btn','Accessibility','Open this panel to enlarge text, switch to an easy-read font, turn on high contrast or reduce motion. It is saved on your device.');
-if(!u){add('.pub-head .right .btn.ghost','Log in','Sign in with your email and password.');add('.pub-head .right .btn.primary','Sign up','Create a free account as a student or a teacher. It takes under a minute.')}
+if(!u){add('.pub-head .right .btn.ghost','Log in','Sign in with your username and password, powered by Enkryption.');add('.pub-head .right .btn.primary','Sign up','Create a free account as a student or a teacher. It takes under a minute.')}
 else add('.pub-head .right .btn.primary','Dashboard','Your personal dashboard: resources, progress, the Study Lab and more.');
 add('.pill','What is new','This announcement opens the book about the newest features. Try clicking it later.');
 add('.herosearch','Search','Type a subject, topic, exam board or teacher and press Search to jump into the library.');
@@ -2485,7 +2452,7 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 const go=h=>{if(location.hash===h)route();else location.hash=h};
 const goDiscover=f=>{ui.pending=f;go('#/discover')};
 const ROUTES=[
-[/^\/$/,()=>viewLanding(),{}],
+[/^\/$/,()=>viewLanding(),{}],[/^\/login$/,()=>viewLogin(),{guest:1}],[/^\/signup$/,q=>viewSignup(q),{guest:1}],
 [/^\/(about|contact|privacy|terms|settings-info)$/,(q,k)=>viewStatic(k),{}],
 [/^\/overview$/,()=>viewOverview(),{auth:1}],[/^\/discover$/,q=>viewDiscover(q),{}],[/^\/subjects$/,()=>viewSubjects(),{}],[/^\/subjects\/([\w-]+)$/,(q,id)=>viewSubject(id),{}],
 [/^\/lab$/,()=>viewLab(),{auth:1}],[/^\/news$/,()=>viewNews(),{}],[/^\/library$/,()=>viewMyLibrary(),{auth:1}],[/^\/bookmarks$/,()=>viewBookmarks(),{auth:1}],
@@ -2495,22 +2462,15 @@ const ROUTES=[
 [/^\/admin\/reports$/,()=>adminReports(),{auth:1,role:'admin'}],[/^\/admin\/requests$/,()=>adminRequests(),{auth:1,role:'admin'}],[/^\/admin\/subjects$/,()=>adminSubjects(),{auth:1,role:'admin'}],[/^\/admin\/stats$/,()=>adminStats(),{auth:1,role:'admin'}]];
 function pageTurnFallback(dir){const l=document.createElement('div');l.className='pt-leaf '+dir;document.body.appendChild(l);setTimeout(()=>l.remove(),950)}
 function route(force){const h=location.hash||'#/',st=ui.hs||(ui.hs=[]);let dir='fwd';
-if(AUTHRE.test(h)){ui.routed=1;return routeInner()}
 if(st.length>1&&st[st.length-2]===h){st.pop();dir='back'}else if(st[st.length-1]!==h)st.push(h);
 const same=h===ui.lastH;ui.lastH=h;
 if(!ui.routed||ui.noTurn||(same&&force!==1)||PERF.motionOff()||document.documentElement.classList.contains('bk-lock')){ui.routed=1;ui.noTurn=0;return routeInner()}
 document.documentElement.dataset.turn=dir;
 if(document.startViewTransition){const t=document.startViewTransition(()=>{routeInner()});const done=()=>{delete document.documentElement.dataset.turn};t.updateCallbackDone.catch(e=>console.error(e));t.ready.catch(()=>{});t.finished.then(done,done)}
 else{pageTurnFallback(dir);routeInner();setTimeout(()=>{delete document.documentElement.dataset.turn},900)}}
-const AUTHRE=/^#\/?(login|signup)(\?.*)?$/i;
-function routeInner(ov){closeModal(true);
-const AH=!ov&&location.hash.match(AUTHRE);
-if(AH){if(me())return go('#/overview');
-const app=$('#app');if(!app.firstElementChild||app.querySelector('.shell')){ui.under='#/';ui.introDone=true;routeInner('#/')}
-const q=new URLSearchParams((location.hash.split('?')[1])||'');AO.open(/signup/i.test(AH[1])?'signup':'signin',{role:q.get('role')});return}
-if(!ov){AO.hide();ui.under=location.hash||'#/'}document.documentElement.classList.remove('bk-lock');['bk','rd'].forEach(id=>{const e=document.getElementById(id);if(e&&e.parentElement===document.body)e.remove()});if(ui.scrollFn){removeEventListener('scroll',ui.scrollFn);removeEventListener('resize',ui.scrollFn);ui.scrollFn=null}if(ui.mmFn){removeEventListener('mousemove',ui.mmFn);ui.mmFn=null}if(ui.kbFn){removeEventListener('keydown',ui.kbFn);ui.kbFn=null}$('#side')&&0;const h=(ov||location.hash).slice(1)||'/',[path,qs]=h.split('?'),q=new URLSearchParams(qs||''),u=me();let v;
+function routeInner(){closeModal(true);document.documentElement.classList.remove('bk-lock');['bk','rd'].forEach(id=>{const e=document.getElementById(id);if(e&&e.parentElement===document.body)e.remove()});if(ui.scrollFn){removeEventListener('scroll',ui.scrollFn);removeEventListener('resize',ui.scrollFn);ui.scrollFn=null}if(ui.mmFn){removeEventListener('mousemove',ui.mmFn);ui.mmFn=null}if(ui.kbFn){removeEventListener('keydown',ui.kbFn);ui.kbFn=null}$('#side')&&0;const h=location.hash.slice(1)||'/',[path,qs]=h.split('?'),q=new URLSearchParams(qs||''),u=me();let v;
 for(const[re,fn,o]of ROUTES){const m=path.match(re);if(!m)continue;
-if(o.auth&&!u){ui.next=location.hash;return go('#/login')}if(o.role&&u.role!==o.role)return go('#/overview');
+if(o.auth&&!u){ui.next=location.hash;return go('#/login')}if(o.guest&&u)return go('#/overview');if(o.role&&u.role!==o.role)return go('#/overview');
 try{v=fn(q,...m.slice(1))}catch(err){console.error(err);v=view404()}break}
 if(!v)v=view404();let sh=v.shell||'app';if(sh==='auto')sh=u?'app':'public';
 $('#app').innerHTML=sh==='app'?appShell(v.html,v.nav||''):sh==='auth'?authShell(v.html):publicShell(v.html,v.nav);
@@ -2528,13 +2488,13 @@ const actions={
 'toggle-theme'(){THEME.set(THEME.get()==='dark'?'light':'dark');const b=$('#theme-state');if(b)b.textContent=THEME.get()==='dark'?'Switch to light':'Switch to dark'},
 'hide-banner'(){ui.hideBanner=true;$('.demo-banner')?.remove()},
 'scroll-how'(el,e){e.preventDefault();const s=()=>$('#story')?.scrollIntoView({behavior:'smooth'});if(location.hash!=='#/'&&location.hash!==''){go('#/');setTimeout(s,80)}else s()},
-'cta-upload'(){const u=me();if(!u){ui.next='#/upload';ui.aoMsg='Sign in to upload resources';return go('#/login')}u.role==='teacher'?go('#/upload'):toast('Uploading is available to teacher accounts.','warn')},
+'cta-upload'(){const u=me();if(!u)return go('#/signup?role=teacher');u.role==='teacher'?go('#/upload'):toast('Uploading is available to teacher accounts.','warn')},
 'quick-search'(el,e){e.preventDefault();goDiscover({q:el.dataset.q})},
 'close-modal'(){closeModal()},'confirm-yes'(){const r=ui.confirm;ui.confirm=null;closeModal(true);r&&r(true)},
 bookmark(el){if(!requireAuth('Sign in to save resources'))return;const id=el.dataset.id,on=API.toggleBookmark(id);$$(`.bm[data-id="${id}"]`).forEach(b=>b.classList.toggle('on',on));toast(on?'Saved to bookmarks':'Removed from bookmarks');if(!el.classList.contains('bm')||location.hash==='#/bookmarks')route()},
 preview(el){const r=getRes(el.dataset.id);if(!r)return;if(me())API.recordView(r.id);const url=blobUrl(r);openModal({title:r.title,size:'lg',body:`<iframe class="pdf" src="${url}" title="PDF preview"></iframe><p class="hint" style="margin-top:8px">Preview not showing? <a href="${url}" target="_blank" rel="noopener" style="text-decoration:underline">Open in a new tab</a>.</p>`,footer:`<a class="btn" href="#/resource/${r.id}">Details & reviews</a><button class="btn primary" data-act="download" data-id="${r.id}">${icon('download')}Download</button>`})},
 download(el){if(!requireAuth('Sign in to download'))return;const r=getRes(el.dataset.id);if(r){API.download(r);toast('Download started')}},
-signout(){Auth.signOut();ui.next=null;toast('Signed out');go('#/login')},
+signout(){Auth.signOut();go('#/');toast('Signed out')},
 'toggle-side'(){$('#side')?.classList.toggle('open');$('#scrim')?.classList.toggle('open')},'user-menu'(){$('#umenu')?.classList.toggle('open')},
 'exam-add'(){simpleForm('Add exam','exam',fld('Exam name','name')+`<div class="form-grid"><div class="field"><label>Subject</label><select class="select" name="subject">${optionList(S.subjects.map(s=>[s.id,s.name]),'','No subject')}</select></div>${fld('Date','date',`<input class="input" type="date" name="date" required min="${new Date().toISOString().slice(0,10)}">`)}</div>`,'Add exam')},
 'exam-del'(el){const d=UD();d.exams=d.exams.filter(x=>x.id!==el.dataset.id);persist();route()},
@@ -2589,6 +2549,12 @@ async 'subj-del'(el){const s=subj(el.dataset.id);if(S.resources.some(r=>r.subjec
 /* ---------- forms ---------- */
 const forms={
 'global-search'(f,fd){const q=(fd.get('q')||'').trim();goDiscover({q})},'landing-search'(f,fd){goDiscover({q:(fd.get('q')||'').trim()})},
+async login(f,fd){const btn=f.querySelector('[type=submit]'),err=$('#lerr');err.textContent='';const un=fd.get('username').trim(),pw=fd.get('password');if(!un||!pw)return err.textContent='Enter your username and password.';
+btn.disabled=true;btn.textContent='Signing in…';const r=await Auth.login(un,pw);btn.disabled=false;btn.textContent='Log in';if(r.error)return err.textContent=r.error;const n=ui.next;ui.next=null;toast(r.created?'No account existed, so a new one was created':'Welcome back, '+r.user.name);go(n||'#/overview')},
+async signup(f,fd){const role=fd.get('role'),subjects=fd.getAll('subjects'),err=$('#serr'),btn=f.querySelector('[type=submit]');err.textContent='';if(!subjects.length)return err.textContent='Choose at least one subject.';
+const un=fd.get('username').trim(),pw=fd.get('password');if(!/^[A-Za-z0-9_.\-]{3,32}$/.test(un))return err.textContent='Username must be 3 to 32 letters, numbers, dots or underscores.';if(pw.length<6)return err.textContent='Password must be at least 6 characters.';
+btn.disabled=true;btn.textContent='Creating account…';const r=await Auth.login(un,pw,{name:fd.get('name').trim(),email:(fd.get('email')||'').trim()||un,role,subjects,year:fd.get('year'),board:fd.get('board'),school:(fd.get('school')||'').trim()});btn.disabled=false;btn.textContent='Create account';
+if(r.error)return err.textContent=r.error;toast(!r.created?'That username already existed, so you are signed in to it':role==='teacher'?'Account created. Verification request sent.':'Account created');go('#/overview')},
 contact(f){toast('Thanks! In this demo the message is not sent anywhere.');f.reset()},
 exam(f,fd){UD().exams.push({id:uid('e'),name:fd.get('name').trim(),subject:fd.get('subject'),date:fd.get('date')});persist();closeModal(true);route();toast('Exam added')},
 collection(f,fd){const d=UD(),id=f.dataset.id;if(id){const c=d.collections.find(x=>x.id===id);c.name=fd.get('name').trim();c.desc=(fd.get('desc')||'').trim()}else d.collections.push({id:uid('c'),name:fd.get('name').trim(),desc:(fd.get('desc')||'').trim(),items:[]});persist();closeModal(true);route();toast('Collection saved')},
@@ -2643,62 +2609,9 @@ if(t.id==='taginput'){if(e.key==='Enter'||e.key===','){e.preventDefault();if(t.v
 if(t.id==='dzone'&&(e.key==='Enter'||e.key===' ')){e.preventDefault();$('#fileinput').click()}
 if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test(t.tagName)){const g=$('#gsearch');if(g){e.preventDefault();g.focus()}}});
 Object.assign(actions,labActions);Object.assign(forms,labForms);Object.assign(changes,labChanges);
-
-/* ---------- auth overlay controller ---------- */
-const AO=(()=>{let el=null,mode='signin',role='student',prev=null,busy=false;
-const eyeBtn=id=>`<button type="button" class="ao-eye" data-ao="eye" data-for="${id}" aria-label="Show password" aria-pressed="false">${icon('eye')}</button>`;
-const pw=(id,label,auto,ph)=>`<div class="field"><label for="${id}">${label}</label><div class="ao-pw"><input class="input" id="${id}" name="${id.replace('ao-','')}" type="password" autocomplete="${auto}" placeholder="${ph}" required>${eyeBtn(id)}</div></div>`;
-function html(){const su=mode==='signup';
-return`<div class="ao-in"><div class="ao-top"><a class="logo" href="#/" data-ao="back">${LOGO}WIND UP</a><button type="button" class="ao-back" data-ao="back">${icon('back')}Back to site</button></div>
-<div class="ao-wrap"><div class="ao-card${su?' wide':''}"><div class="seg ao-tabs" role="tablist" aria-label="Account"><button type="button" role="tab" data-ao="mode" data-m="signin" aria-selected="${!su}" class="${su?'':'on'}">Sign in</button><button type="button" role="tab" data-ao="mode" data-m="signup" aria-selected="${su}" class="${su?'on':''}">Create account</button></div>
-<h1 id="ao-title">${su?'Create your account':'Welcome back'}</h1><p class="muted">${su?'Free for students and teachers.':'Sign in to your WIND UP account.'}</p>
-${ui.aoMsg?`<div class="ao-note" role="status">${esc(ui.aoMsg)}</div>`:''}
-<form id="ao-form" novalidate data-m="${mode}">
-${su?`<div class="field"><label id="ao-rl">I am a</label><div class="seg" role="radiogroup" aria-labelledby="ao-rl">${['student','teacher'].map(r=>`<button type="button" role="radio" data-ao="role" data-r="${r}" aria-checked="${r===role}" class="${r===role?'on':''}">${r}</button>`).join('')}</div></div>
-<div class="form-grid"><div class="field"><label for="ao-name">Full name</label><input class="input" id="ao-name" name="name" autocomplete="name" placeholder="${role==='teacher'?'Ms Jane Smith':'Jane Smith'}" required></div>
-<div class="field"><label for="ao-email">Email</label><input class="input" id="ao-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@school.org" required></div></div>
-<div class="field"><label for="ao-school">School or institution${role==='teacher'?'':' <span class="faint">(optional)</span>'}</label><input class="input" id="ao-school" name="school" autocomplete="organization" placeholder="Northfield Academy"${role==='teacher'?' required':''}></div>
-<div class="form-grid">${pw('ao-password','Password','new-password','at least 8 characters')}${pw('ao-confirm','Confirm password','new-password','repeat password')}</div>
-${role==='teacher'?'<p class="hint" style="margin:-4px 0 12px">Teachers start unverified. An administrator reviews your request; unverified uploads are reviewed before they appear.</p>':''}`
-:`<div class="field"><label for="ao-email">Email</label><input class="input" id="ao-email" name="email" type="email" autocomplete="username" inputmode="email" placeholder="you@school.org" required></div>${pw('ao-password','Password','current-password','your password')}`}
-<div class="err" id="ao-err" role="alert"></div>
-<button class="btn primary lg block" type="submit" id="ao-submit">${su?'Create account':'Sign in'}</button></form>
-<p class="ao-sw">${su?'Already have an account?':'New to WIND UP?'} <button type="button" data-ao="mode" data-m="${su?'signin':'signup'}">${su?'Sign in':'Create an account'}</button></p>
-${su?'':`<div class="ao-demo"><h2>Demo accounts</h2><div class="chips">${Auth.DEMOS.map(d=>`<button type="button" data-ao="demo" data-k="${d.key}"><b style="text-transform:capitalize">${d.key}</b><small>${esc(d.email)}</small></button>`).join('')}</div><p class="hint" style="margin-top:8px">Click one to sign in. Password: ${Auth.DEMO_PW}</p></div>`}
-</div></div></div>`}
-function render(focus=true){el.innerHTML=html();el.scrollTop=0;if(focus){const f=el.querySelector('input');f&&setTimeout(()=>f.focus({preventScroll:true}),30)}}
-function ensure(){if(el)return;el=document.createElement('div');el.id='authOverlay';el.className='ao';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','ao-title');document.body.appendChild(el);
-el.addEventListener('click',onClick);el.addEventListener('submit',onSubmit);el.addEventListener('keydown',onKey);
-el.addEventListener('input',e=>{const x=el.querySelector('#ao-err');if(x&&x.textContent&&e.target.matches('input'))x.textContent=''})}
-function setHash(m){const h=m==='signup'?'#/signup'+(role==='teacher'?'?role=teacher':''):'#/login';try{history.replaceState(null,'',h)}catch(e){}ui.lastH=h}
-function open(m,o={}){ensure();const was=el.classList.contains('on');if(!was)prev=document.activeElement;mode=m;role=o.role==='teacher'?'teacher':'student';render();
-el.classList.add('on');document.documentElement.classList.add('auth-open');const app=$('#app');if(app)app.inert=true}
-function hide(){if(!el||!el.classList.contains('on'))return;el.classList.remove('on');document.documentElement.classList.remove('auth-open');const app=$('#app');if(app)app.inert=false;ui.aoMsg=null}
-function safeUnder(){const u=ui.under||'#/';return/^#\/(overview|lab|library|bookmarks|uploads?|profile|settings|admin)/.test(u)||AUTHRE.test(u)?'#/':u}
-function close(){if(!el||!el.classList.contains('on'))return;const u=safeUnder();hide();ui.next=null;try{history.replaceState(null,'',u)}catch(e){location.hash=u}ui.lastH=u;ui.under=u;const p=prev;prev=null;try{p&&document.contains(p)&&p.focus()}catch(e){}}
-const isOn=()=>!!el&&el.classList.contains('on');
-function fail(msg,field){const e=el.querySelector('#ao-err');if(e)e.textContent=msg;toast(msg,'err');const f=field&&el.querySelector('#ao-'+field);if(f){f.focus();f.setAttribute('aria-invalid','true');f.addEventListener('input',()=>f.removeAttribute('aria-invalid'),{once:true})}}
-function done(r){const n0=ui.next;ui.next=null;hide();let n=n0&&!AUTHRE.test(n0)?n0:null;
-toast(r.created?(r.user.role==='teacher'?'Account created. Verification request sent.':'Account created. Welcome, '+r.user.name+'!'):'Welcome back, '+r.user.name);
-if(n==='#/upload'&&r.user.role!=='teacher'){toast('Uploading is available to teacher accounts.','warn');n=null}
-prev=null;go(n||'#/overview')}
-async function submit(){if(busy)return;const f=el.querySelector('#ao-form'),fd=new FormData(f),btn=el.querySelector('#ao-submit'),label=btn.textContent;busy=true;btn.disabled=true;btn.textContent=mode==='signup'?'Creating account…':'Signing in…';
-let r;try{r=mode==='signup'?await Auth.signUp({name:fd.get('name'),email:fd.get('email'),password:fd.get('password'),confirm:fd.get('confirm'),role,school:fd.get('school')}):await Auth.signIn(fd.get('email'),fd.get('password'))}catch(err){console.error(err);r={error:'Something went wrong. Please try again.'}}
-busy=false;if(!el.classList.contains('on'))return;btn.disabled=false;btn.textContent=label;if(r.error)return fail(r.error,r.field);done(r)}
-async function demo(k){const d=Auth.DEMOS.find(x=>x.key===k);if(!d||busy)return;if(mode!=='signin'){mode='signin';render(false)}const f=el.querySelector('#ao-form');f.elements.email.value=d.email;f.elements.password.value=Auth.DEMO_PW;await submit()}
-function onClick(e){const b=e.target.closest('[data-ao]');if(!b)return;const a=b.dataset.ao;
-if(a==='back'){e.preventDefault();close()}
-else if(a==='mode'){if(b.dataset.m!==mode){mode=b.dataset.m;ui.aoMsg=ui.aoMsg;render();setHash(mode)}}
-else if(a==='role'){role=b.dataset.r;const keep=el.querySelector('#ao-form');const vals={};if(keep)[...new FormData(keep)].forEach(([k,v])=>vals[k]=v);render(false);for(const k in vals){const i=el.querySelector('#ao-form').elements[k];if(i&&i.type!=='radio')i.value=vals[k]}setHash(mode)}
-else if(a==='eye'){const i=el.querySelector('#'+b.dataset.for),on=i.type==='password';i.type=on?'text':'password';b.setAttribute('aria-pressed',on);b.setAttribute('aria-label',on?'Hide password':'Show password')}
-else if(a==='demo'){demo(b.dataset.k)}}
-function onSubmit(e){e.preventDefault();submit()}
-function onKey(e){if(e.key!=='Tab')return;const l=[...el.querySelectorAll('button,input,select,a[href]')].filter(x=>!x.disabled&&x.offsetParent!==null);if(!l.length)return;const i=l.indexOf(document.activeElement);if(e.shiftKey&&(i<=0)){e.preventDefault();l[l.length-1].focus()}else if(!e.shiftKey&&i===l.length-1){e.preventDefault();l[0].focus()}}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&isOn()){e.preventDefault();e.stopImmediatePropagation();close()}},true);
-return{open,hide,close,isOn}})();
 window.addEventListener('hashchange',route);
 S.users=S.users.filter(u=>u.authId||u.email!=='admin@demo.windup');if(S.session&&!S.users.some(u=>u.id===S.session))S.session=null;
-{const cu=me();if(cu&&cu.authId&&!Auth.signedIn()){S.session=null;persist()}if(!me()&&Auth.signedIn())Auth.restore()}
+{const cu=me();if(cu&&cu.authId&&!Auth.signedIn()){S.session=null;persist()}}
 /* accessibility: give every control an accessible name, keep dialogs labelled */
 let axN=0;function axLabelAll(){document.querySelectorAll('input:not([type=hidden]),select,textarea').forEach(c=>{if(c.getAttribute('aria-label')||c.getAttribute('aria-labelledby')||c.closest('label'))return;if(c.id&&document.querySelector('label[for="'+c.id+'"]'))return;
 let l=c.closest('.field,.col,div')&&c.closest('.field,.col,div').querySelector(':scope > label, :scope > .lbl, :scope > span.sm');let t=l&&l.textContent.trim();
